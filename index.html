@@ -200,6 +200,56 @@ body{background:
 .topc b{color:var(--c)}
 .screen h1{background:linear-gradient(90deg,var(--b5),var(--b1));-webkit-background-clip:text;background-clip:text;color:transparent}
 @media (prefers-reduced-motion:reduce){.card.nope{animation:none}}
+/* ——— интро ——— */
+.intro{position:fixed;inset:0;z-index:5;overflow:hidden;display:flex;flex-direction:column;color:#fff;isolation:isolate}
+.intro .ic{position:relative;z-index:3;margin-top:auto;width:100%;max-width:440px;margin-inline:auto;padding:0 20px max(22px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px}
+.intro h1{margin:0;font-family:var(--display);font-size:clamp(40px,12vw,56px);line-height:.98;letter-spacing:-.03em;font-weight:800}
+.intro p{margin:0;font-size:16px;line-height:1.4;font-weight:600;opacity:.92;max-width:30ch}
+.intro .meta{display:flex;gap:8px;flex-wrap:wrap}
+.intro .meta span{font-size:12px;font-weight:800;padding:6px 11px;border-radius:99px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.intro .go2{border:0;border-radius:20px;padding:19px;font-family:var(--display);font-weight:800;font-size:18px;background:#fff;color:#1b1206;box-shadow:0 12px 30px rgba(0,0,0,.22);transition:transform .15s}
+.intro .go2:active{transform:scale(.97)}
+.intro .pv{position:absolute;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:6;display:flex;gap:6px}
+.intro .pv button{border:0;border-radius:99px;padding:6px 12px;font-size:12px;font-weight:800;background:rgba(0,0,0,.28);color:#fff}
+.intro .pv button.on{background:#fff;color:#111}
+/* 1 — внутри апельсина */
+.v1{background:#F26B0F}
+.v1 .slice{position:absolute;left:50%;top:30%;width:140vmax;height:140vmax;transform:translate(-50%,-50%);border-radius:50%;z-index:1;
+  background:radial-gradient(circle,#FFF6E4 0 2.6%,transparent 2.8%),
+    radial-gradient(circle,rgba(255,236,190,.75) 0 6%,rgba(255,200,120,.15) 22%,transparent 38%,rgba(210,70,0,.35) 50%),
+    repeating-conic-gradient(from 3deg,#FF8A12 0deg 27.5deg,#FFF1D8 27.5deg 30deg);
+  animation:spin 120s linear infinite}
+.v1 .slice::after{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,.10) 0 3px,transparent 3px 11px),repeating-conic-gradient(from 0deg,transparent 0 5deg,rgba(255,255,255,.06) 5deg 6deg)}
+.v1 .drop{position:absolute;z-index:2;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 18%,rgba(255,220,150,.9) 30%,rgba(255,160,40,.6) 70%);animation:float 7s ease-in-out infinite}
+.v1::after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,transparent 40%,rgba(214,72,0,.75) 70%,#C63F00 100%)}
+/* 2 — северное сияние сфер */
+.v2{background:#120B26}
+.v2 .blob{position:absolute;z-index:1;width:70vmax;height:70vmax;border-radius:50%;filter:blur(60px);opacity:.85;mix-blend-mode:screen;animation:drift 16s ease-in-out infinite alternate}
+.v2 .ring{position:absolute;z-index:2;left:50%;top:32%;width:78vmin;height:78vmin;transform:translate(-50%,-50%);border-radius:50%;
+  background:conic-gradient(#E0457B,#FF8A2A,#F5C400,#3CCB7F,#20C4C4,#3D7BFF,#9B5CFF,#E0457B);
+  -webkit-mask:radial-gradient(circle,transparent 0 58%,#000 59% 70%,transparent 71%);mask:radial-gradient(circle,transparent 0 58%,#000 59% 70%,transparent 71%);animation:spin 24s linear infinite;filter:drop-shadow(0 0 30px rgba(255,255,255,.35))}
+.v2 .ring2{width:52vmin;height:52vmin;animation-direction:reverse;animation-duration:32s;opacity:.7}
+.v2::after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,transparent 45%,rgba(18,11,38,.85) 80%)}
+/* 3 — колода сценариев */
+.v3 .meta span{background:rgba(120,30,0,.22)}
+.v3::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,transparent 50%,rgba(200,40,40,.35))}
+.v3{background:linear-gradient(160deg,#FF4F81 0%,#FF8A3D 45%,#FFC23D 100%)}
+.v3 .deck{position:absolute;z-index:1;left:50%;top:30%;width:250px;height:300px;transform:translate(-50%,-50%)}
+.v3 .mini{position:absolute;inset:0;border-radius:26px;background:#fff;color:#1b1206;padding:20px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 20px 40px rgba(120,20,0,.25);
+  transform:rotate(var(--r)) translate(var(--x),var(--y));animation:bob 5s ease-in-out infinite;animation-delay:var(--d)}
+.v3 .mini:not(.top) b{visibility:hidden}
+.v3 .intro-x{}
+.v3 .mini b{font-family:var(--display);font-size:22px;line-height:1.1;letter-spacing:-.01em}
+.v3 .mini i{align-self:flex-start;font-style:normal;font-size:12px;font-weight:800;color:#fff;background:var(--c);padding:5px 11px;border-radius:99px}
+.v3 .mini.top{animation:swipeHint 4.5s ease-in-out infinite}
+.v3 .mini .st{position:absolute;top:18px;right:16px;font-family:var(--display);font-weight:800;font-size:15px;color:#1C9C62;border:3px solid;border-radius:10px;padding:3px 8px;transform:rotate(12deg);opacity:0;animation:stamp 4.5s ease-in-out infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes float{50%{transform:translateY(-22px) scale(1.08)}}
+@keyframes drift{to{transform:translate(var(--dx),var(--dy)) scale(1.15)}}
+@keyframes bob{50%{transform:rotate(var(--r)) translate(var(--x),calc(var(--y) - 8px))}}
+@keyframes swipeHint{0%,30%,100%{transform:rotate(0) translate(0,0)}55%,70%{transform:rotate(9deg) translate(70px,-8px)}}
+@keyframes stamp{0%,35%,90%,100%{opacity:0}55%,70%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.intro *{animation:none!important}}
 </style>
 
 <div class="app" id="app"></div>
@@ -220,13 +270,11 @@ function ymParams(goal,p){
     const on={};(p.value?(JSON.parse(p.value).on||[]):[]).forEach(t=>on[t]=1);
     const leaf=Object.keys(on).length?on:1;
     return {'Карточки':{[name]:{[ANS[p.answer]]:leaf}},
-            'По возрасту':{[p.age||'не указан']:{[name]:{[ANS[p.answer]]:1}}},
-            'По доходу':{[p.income||'не указан']:{[name]:{[ANS[p.answer]]:1}}},
             'Позиция ответа':{[name]:{[ANS[p.answer]]:{['позиция '+p.pos]:1}}}};
   }
   if(goal==='blocked_yes') return {'Хочу без выбора':{[name]:1}};
   if(goal==='comment') return {'Комментарии':{[p.value]:1}};
-  if(goal==='start') return {'Кто начал':{[p.age||'не указан']:{[p.income||'не указан']:1}}};
+  if(goal==='start') return {'Начали':1};
   if(goal==='finish') return {'Сколько ответил':{[String(p.n)]:1}};
   return p;
 }
@@ -271,9 +319,6 @@ const CARDS=[
    {toggles:'Что включить',items:[{t:'Напомнить за день до списания подписки'},{t:'Найти забытые подписки'},{t:'Показать, где плачу дважды за одно и то же'},{t:'Подобрать тариф связи дешевле'},{t:'План, как быстрее закрыть кредиты'}]}]},
  {id:'s_shop',s:'money',q:'Покупать с умом — без таблиц и подсчётов',blocks:[
    {toggles:'Что включить',items:[{t:'Все чеки сами собираются в приложении'},{t:'Сколько в месяц уходит на кофе и перекусы'},{t:'Где тот же товар дешевле'},{t:'Корзина продуктов в заданную сумму',input:'₽ в неделю'},{t:'Не пропустить срок возврата покупки'},{t:'Чеки для налогового вычета — в одной папке'}]}]},
- {id:'s_wish',s:'money',q:'Список желаний, который всегда под рукой',blocks:[
-   {wish:true},
-   {toggles:'Что ещё',items:[{t:'Через неделю спросить: всё ещё хочется?'},{t:'Копить на вещь из списка'},{t:'Поделиться списком с близкими — пусть знают, что дарить'}]}]},
  {id:'s_tasks',s:'work',q:'Три главных дела на день — и спокойствие, что ничего не забыто',blocks:[
    {inputs:[{id:'t1',ph:'Дело 1',w:'wide'},{id:'t2',ph:'Дело 2',w:'wide'},{id:'t3',ph:'Дело 3',w:'wide'}],label:'Что важно сделать сегодня · можно пропустить'},
    {toggles:'Что включить',items:[{t:'Утром — напомнить записать дела'},{t:'Днём — проверить, как продвигается',sel:['12:00','15:00','18:00']},{t:'Отметить одно дело главным'},{t:'Предупреждать о дедлайнах заранее'},{t:'Пока делаю главное — соцсети на паузе'}]}]},
@@ -376,17 +421,31 @@ function buildOrder(){const head=['s_income'];const rest=CARDS.map(c=>c.id).filt
 /* ============ Экраны ============ */
 const app=document.getElementById('app');
 function render(){ if(st.screen==='intro')return intro(); if(st.screen==='done'||st.i>=st.order.length)return done(); swipe() }
+const PREVIEW_INTRO=false;
+const HOOKS=[['Куда на самом деле уходит ваша зарплата','Финансы','#1C9C62'],
+  ['Забытые подписки всё ещё списываются','Финансы','#E0457B'],
+  ['Дожить до зарплаты и не занимать','Финансы','#3D7BFF'],
+  ['Накопить на мечту и даже не заметить','Финансы','#9B5CFF']]; // показать переключатель вариантов интро (для выбора)
 function intro(){
-  const opt=(k,v)=>`<button class="opt ${st[k]===v?'on':''}" data-set="${k}" data-v="${v}">${v}</button>`;
-  app.innerHTML=`<div class="screen">
-    <h1>Каким должно быть приложение, которое помогает жить спокойнее?</h1>
-    <p>${CARDS.length} коротких сценариев — про деньги, дела, здоровье, близких и отдых. Около 5 минут. В каждом включите то, что вам правда нужно, и нажмите «Хочу». Не ваше — «Не нужно».</p>
-    <div class="how"><b class="y">Хочу →</b><span>сначала отметьте, что именно</span><b class="n">← Не нужно</b><span>свайп влево или кнопка слева</span></div>
-    <div class="q"><h3>Сколько вам лет?</h3><div class="opts">${['14–17','18–24','25–34','35+'].map(v=>opt('age',v)).join('')}</div></div>
-    <div class="q"><h3>Какой у вас доход?</h3><div class="opts">${['Зарплата','Стипендия','Подработки','Деньги от родителей','Пока нет'].map(v=>opt('income',v)).join('')}</div></div>
-    <div class="spheres">${Object.keys(SPH).map(k=>`<span style="--c:var(${SC[k]})">${SPH[k]}</span>`).join('')}</div><p class="small">В конце покажем ваше колесо баланса — какие сферы жизни вам важнее всего.</p>
-    <button class="go" data-act="start">Начать</button></div>`;
+  const v=+(st.iv||3);
+  const n=CARDS.length;
+  const pv=PREVIEW_INTRO?`<div class="pv">${[1,2,3].map(k=>`<button class="${v===k?'on':''}" data-set="iv" data-v="${k}">Вариант ${k}</button>`).join('')}</div>`:'';
+  let art='';
+  if(v===1){ art=`<div class="slice"></div>`+[[12,58,26,0],[78,50,18,1.5],[30,70,12,3],[86,22,14,2],[8,20,10,4]].map(([x,y,s,d])=>`<i class="drop" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;animation-delay:${d}s"></i>`).join(''); }
+  if(v===2){ art=[['#E0457B','-20%','-10%','20vw','15vh'],['#FF8A2A','40%','-25%','-15vw','20vh'],['#3D7BFF','-30%','30%','25vw','-10vh'],['#20C4C4','45%','25%','-20vw','-15vh'],['#9B5CFF','5%','5%','10vw','10vh']].map(([c,x,y,dx,dy],i)=>`<i class="blob" style="background:${c};left:${x};top:${y};--dx:${dx};--dy:${dy};animation-delay:-${i*3}s"></i>`).join('')+`<div class="ring"></div><div class="ring ring2"></div>`; }
+  if(v===3){ const m=[['Три главных дела на день','Дела','#3D7BFF','-11deg','-34px','18px','0s'],['Копить на мечту','Финансы','#1C9C62','9deg','30px','8px','-1.5s'],[HOOKS[0][0],HOOKS[0][1],HOOKS[0][2],'-3deg','-6px','-4px','-3s']];
+    art=`<div class="deck">${m.map(([t,c,col,r,x,y,d],i)=>`<div class="mini${i===2?' top':''}" style="--r:${r};--x:${x};--y:${y};--d:${d};--c:${col}"><i>${c}</i><b>${t}</b>${i===2?'<span class="st">ХОЧУ</span>':''}</div>`).join('')}</div>`; }
+  app.innerHTML=`<div class="intro v${v}">${pv}${art}
+    <div class="ic">
+      <h1>Моё или<br>не моё?</h1>
+      <p>Помощник для финансов и повседневных дел. Выберите, что из этого вам правда нужно.</p>
+      <div class="meta"><span>${n} сценариев</span><span>вправо — хочу, влево — нет</span></div>
+      <button class="go2" data-act="start">Поехали</button>
+    </div></div>`;
+  const top=app.querySelector('.mini.top');
+  if(top){let k=0;top.addEventListener('animationiteration',e=>{if(e.animationName!=='swipeHint')return;k=(k+1)%HOOKS.length;const [t,c,col]=HOOKS[k];top.querySelector('b').textContent=t;top.querySelector('i').textContent=c;top.style.setProperty('--c',col)})}
 }
+
 function swipe(){
   const c=byId[st.order[st.i]], nx=byId[st.order[st.i+1]], yes=st.answers.filter(a=>a.a==='yes').length;
   app.innerHTML=`<div class="top">
@@ -468,7 +527,7 @@ function done(){
     <div class="fb"><h3>Чего-то не хватило?</h3><p class="small">Напишите, что ещё хотелось бы видеть в таком приложении, что было непонятно или что лишнее. Можно пропустить.</p>
       ${st.comment?`<div class="fbok">Спасибо, ваш комментарий отправлен.</div>`:`<textarea id="fbt" rows="4" placeholder="Например, хочу напоминания о врачах"></textarea><button class="go" data-act="fbsend">Отправить</button>`}</div>
     ${st.i<st.order.length?`<button class="go" data-act="resume">Продолжить с карточки ${st.i+1}</button>`:''}
-    <details><summary class="small">Данные сессии (для проверки)</summary><pre>${JSON.stringify({sid:st.sid,age:st.age,income:st.income,answers:ans})}</pre><button class="opt" data-act="copy">Скопировать</button></details>
+    <details><summary class="small">Данные сессии (для проверки)</summary><pre>${JSON.stringify({sid:st.sid,answers:ans})}</pre><button class="opt" data-act="copy">Скопировать</button></details>
     <button class="link" data-act="restart">Пройти заново</button></div>`;
 }
 
