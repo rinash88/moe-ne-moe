@@ -173,6 +173,12 @@ pre{background:var(--soft);border-radius:12px;padding:10px;font-size:11px;max-he
 .topc{display:flex;gap:10px;align-items:center;background:var(--soft);border-radius:14px;padding:10px 12px;font-size:14px;font-weight:700}
 .topc b{font-family:var(--display);font-size:18px;min-width:38px}
 .gap{font-size:13px;color:var(--ink2)}
+/* ——— свободный комментарий ——— */
+.fb{display:flex;flex-direction:column;gap:10px;background:color-mix(in srgb, var(--b4) 10%, var(--soft));border-radius:18px;padding:16px}
+.fb h3{margin:0;font-size:17px}
+.fb textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:15px;background:var(--card);color:var(--ink);resize:vertical}
+.fb textarea:focus{outline:2px solid var(--b4);outline-offset:1px}
+.fbok{font-weight:800;color:var(--yes)}
 /* ——— цвет ——— */
 body{background:
   radial-gradient(600px 380px at 0% 0%, color-mix(in srgb, var(--b5) 14%, transparent), transparent 70%),
@@ -439,6 +445,8 @@ function done(){
     ${top.length?`<div class="tops">${top.map(s=>`<div class="topc" style="--c:var(${SC[s.k]})"><b class="num">${s.score}</b>${s.name}</div>`).join('')}</div>`:''}
     ${low.length?`<p class="gap">Сферы, которые вы сейчас не выбрали: ${low.join(', ')}.</p>`:''}
     ${mine.length?`<div><div class="q"><h3>Что вы включили</h3></div><ul class="mine">${mine.map(a=>`<li><span>${SPH[byId[a.id].s]}</span>${byId[a.id].q}${a.v?`<small>${valText(a.v)}</small>`:''}</li>`).join('')}</ul></div>`:''}
+    <div class="fb"><h3>Чего-то не хватило?</h3><p class="small">Напишите, что ещё хотелось бы видеть в таком приложении, что было непонятно или что лишнее. Можно пропустить.</p>
+      ${st.comment?`<div class="fbok">Спасибо, ваш комментарий отправлен.</div>`:`<textarea id="fbt" rows="4" placeholder="Например, хочу напоминания о врачах"></textarea><button class="go" data-act="fbsend">Отправить</button>`}</div>
     ${st.i<st.order.length?`<button class="go" data-act="resume">Продолжить с карточки ${st.i+1}</button>`:''}
     <details><summary class="small">Данные сессии (для проверки)</summary><pre>${JSON.stringify({sid:st.sid,age:st.age,income:st.income,answers:ans})}</pre><button class="opt" data-act="copy">Скопировать</button></details>
     <button class="link" data-act="restart">Пройти заново</button></div>`;
@@ -460,6 +468,7 @@ document.addEventListener('click',e=>{
     case 'finish': st.screen='done';save();track('finish',{sid:st.sid,n:st.answers.length});render();break;
     case 'resume': st.screen='swipe';save();render();break;
     case 'restart': st=fresh();save();render();break;
+    case 'fbsend':{const t=document.getElementById('fbt').value.trim();if(!t)break;st.comment=t;save();track('comment',{sid:st.sid,age:st.age,income:st.income,value:t,n_answers:st.answers.length});render();break}
     case 'copy':{const t=document.querySelector('pre').textContent;navigator.clipboard.writeText(t).then(()=>a.textContent='Скопировано').catch(()=>{const r=document.createRange();r.selectNodeContents(document.querySelector('pre'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r)});break}
   }
 });
