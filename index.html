@@ -422,10 +422,11 @@ function buildOrder(){const head=['s_income'];const rest=CARDS.map(c=>c.id).filt
 const app=document.getElementById('app');
 function render(){ if(st.screen==='intro')return intro(); if(st.screen==='done'||st.i>=st.order.length)return done(); swipe() }
 const PREVIEW_INTRO=false;
-const HOOKS=[['Куда на самом деле уходит ваша зарплата','Финансы','#1C9C62'],
-  ['Забытые подписки всё ещё списываются','Финансы','#E0457B'],
-  ['Дожить до зарплаты и не занимать','Финансы','#3D7BFF'],
-  ['Накопить на мечту и даже не заметить','Финансы','#9B5CFF']]; // показать переключатель вариантов интро (для выбора)
+const HOOKS=[['Опять вечер, а главное так и не сделано?','Дела','#3D7BFF'],
+  ['Деньги заканчиваются раньше зарплаты?','Финансы','#1C9C62'],
+  ['Снова начнёте привычку с понедельника?','Развитие','#7A8F12'],
+  ['Чей день рождения вы забудете в этом году?','Близкие','#E0457B'],
+  ['Сколько раз за неделю вы думали «потом разберусь»?','Спокойствие','#E07B1F']]; // показать переключатель вариантов интро (для выбора)
 function intro(){
   const v=+(st.iv||3);
   const n=CARDS.length;
@@ -433,12 +434,12 @@ function intro(){
   let art='';
   if(v===1){ art=`<div class="slice"></div>`+[[12,58,26,0],[78,50,18,1.5],[30,70,12,3],[86,22,14,2],[8,20,10,4]].map(([x,y,s,d])=>`<i class="drop" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;animation-delay:${d}s"></i>`).join(''); }
   if(v===2){ art=[['#E0457B','-20%','-10%','20vw','15vh'],['#FF8A2A','40%','-25%','-15vw','20vh'],['#3D7BFF','-30%','30%','25vw','-10vh'],['#20C4C4','45%','25%','-20vw','-15vh'],['#9B5CFF','5%','5%','10vw','10vh']].map(([c,x,y,dx,dy],i)=>`<i class="blob" style="background:${c};left:${x};top:${y};--dx:${dx};--dy:${dy};animation-delay:-${i*3}s"></i>`).join('')+`<div class="ring"></div><div class="ring ring2"></div>`; }
-  if(v===3){ const m=[['Три главных дела на день','Дела','#3D7BFF','-11deg','-34px','18px','0s'],['Копить на мечту','Финансы','#1C9C62','9deg','30px','8px','-1.5s'],[HOOKS[0][0],HOOKS[0][1],HOOKS[0][2],'-3deg','-6px','-4px','-3s']];
+  if(v===3){ const m=[['Здоровье','Здоровье','#20A5A5','-11deg','-34px','18px','0s'],['Отдых','Отдых','#9B5CFF','9deg','30px','8px','-1.5s'],[HOOKS[0][0],HOOKS[0][1],HOOKS[0][2],'-3deg','-6px','-4px','-3s']];
     art=`<div class="deck">${m.map(([t,c,col,r,x,y,d],i)=>`<div class="mini${i===2?' top':''}" style="--r:${r};--x:${x};--y:${y};--d:${d};--c:${col}"><i>${c}</i><b>${t}</b>${i===2?'<span class="st">ХОЧУ</span>':''}</div>`).join('')}</div>`; }
   app.innerHTML=`<div class="intro v${v}">${pv}${art}
     <div class="ic">
       <h1>Моё или<br>не моё?</h1>
-      <p>Помощник для финансов и повседневных дел. Выберите, что из этого вам правда нужно.</p>
+      <p>Помощник на каждый день: сберечь деньги, успеть главное и ничего не забыть. Выберите, с чем вам помочь.</p>
       <div class="meta"><span>${n} сценариев</span><span>вправо — хочу, влево — нет</span></div>
       <button class="go2" data-act="start">Поехали</button>
     </div></div>`;
