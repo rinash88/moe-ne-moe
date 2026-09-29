@@ -443,8 +443,6 @@ function intro(){
       <div class="meta"><span>${n} сценариев</span><span>вправо — хочу, влево — нет</span></div>
       <button class="go2" data-act="start">Поехали</button>
     </div></div>`;
-  const top=app.querySelector('.mini.top');
-  if(top){let k=0;top.addEventListener('animationiteration',e=>{if(e.animationName!=='swipeHint')return;k=(k+1)%HOOKS.length;const [t,c,col]=HOOKS[k];top.querySelector('b').textContent=t;top.querySelector('i').textContent=c;top.style.setProperty('--c',col)})}
 }
 
 function swipe(){
