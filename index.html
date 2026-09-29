@@ -179,6 +179,7 @@ pre{background:var(--soft);border-radius:12px;padding:10px;font-size:11px;max-he
 .fb textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:15px;background:var(--card);color:var(--ink);resize:vertical}
 .fb textarea:focus{outline:2px solid var(--b4);outline-offset:1px}
 .fbok{font-weight:800;color:var(--yes)}
+.btns{grid-template-columns:1fr 1fr}
 /* ——— цвет ——— */
 body{background:
   radial-gradient(600px 380px at 0% 0%, color-mix(in srgb, var(--b5) 14%, transparent), transparent 70%),
@@ -210,8 +211,27 @@ body{background:
 const YM_ID = 113165611; // номер счётчика Яндекс Метрики
 const SHEET_URL = '';   // адрес веб-приложения Google Apps Script — каждый ответ станет строкой в таблице
 if(YM_ID){(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');window.ym(YM_ID,'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true})}
+/* Параметры для Метрики — вложенные, чтобы в отчёте «Параметры визитов» раскрывалось:
+   Карточки → сценарий → ответ → что включил; и те же ответы в разрезе возраста и дохода. */
+const ANS={yes:'Хочу',no:'Не нужно',unclear:'Непонятно'};
+function ymParams(goal,p){
+  const name=p.card&&byId[p.card]?byId[p.card].q:p.card;
+  if(goal==='swipe'){
+    const on={};(p.value?(JSON.parse(p.value).on||[]):[]).forEach(t=>on[t]=1);
+    const leaf=Object.keys(on).length?on:1;
+    return {'Карточки':{[name]:{[ANS[p.answer]]:leaf}},
+            'По возрасту':{[p.age||'не указан']:{[name]:{[ANS[p.answer]]:1}}},
+            'По доходу':{[p.income||'не указан']:{[name]:{[ANS[p.answer]]:1}}},
+            'Позиция ответа':{[name]:{[ANS[p.answer]]:{['позиция '+p.pos]:1}}}};
+  }
+  if(goal==='blocked_yes') return {'Хочу без выбора':{[name]:1}};
+  if(goal==='comment') return {'Комментарии':{[p.value]:1}};
+  if(goal==='start') return {'Кто начал':{[p.age||'не указан']:{[p.income||'не указан']:1}}};
+  if(goal==='finish') return {'Сколько ответил':{[String(p.n)]:1}};
+  return p;
+}
 function track(goal,params){
-  try{ if(YM_ID&&window.ym) window.ym(YM_ID,'reachGoal',goal,params) }catch(e){}
+  try{ if(YM_ID&&window.ym) window.ym(YM_ID,'reachGoal',goal,ymParams(goal,params)) }catch(e){}
   try{ if(SHEET_URL) fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({event:goal,ts:new Date().toISOString()},params))}) }catch(e){}
 }
 
@@ -374,8 +394,8 @@ function swipe(){
       <div class="prog"><i style="width:${st.i/st.order.length*100}%"></i></div>
       <div class="set"><span>Выбрано сценариев: <b class="num">${yes}</b></span></div></div>
     <div class="stack" id="stack">${nx?cardHTML(nx,'back'):''}${cardHTML(c,'front')}</div>
-    <div class="btns" style="--c:var(${SC[c.s]})"><button class="b no" data-ans="no">← Не нужно</button><button class="b q" data-ans="unclear">Непонятно</button><button class="b yes" data-ans="yes">Хочу →</button></div>
-    <div class="hint">На компьютере — стрелки ← → и ↓ «непонятно»</div>`;
+    <div class="btns" style="--c:var(${SC[c.s]})"><button class="b no" data-ans="no">← Не нужно</button><button class="b yes" data-ans="yes">Хочу →</button></div>
+    <div class="hint">На компьютере — стрелки ← и →</div>`;
   st.shownAt=Date.now(); wishItems=[]; bindDrag();
 }
 function tryYes(){
@@ -481,7 +501,7 @@ document.addEventListener('input',e=>{const cu=e.target.dataset&&e.target.datase
 document.addEventListener('keydown',e=>{
   if(e.target.closest&&e.target.closest('.act'))return;
   if(st.screen!=='swipe'||st.i>=st.order.length)return;
-  if(e.key==='ArrowRight')tryYes();else if(e.key==='ArrowLeft')fly('no');else if(e.key==='ArrowDown')fly('unclear');
+  if(e.key==='ArrowRight')tryYes();else if(e.key==='ArrowLeft')fly('no');;
 });
 render();
 </script>
