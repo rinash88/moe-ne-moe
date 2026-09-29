@@ -284,6 +284,14 @@ body{background:
 .v3 .deck:has(.ai){height:330px}
 .v3 .mini.top.ai{animation:bob 5s ease-in-out infinite;animation-delay:var(--d)}
 .v3 .mini.ai .st{display:none}
+.dist{display:flex;flex-direction:column;gap:14px}
+.drow{display:flex;flex-direction:column;gap:6px}
+.dtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.dname{font-weight:800;font-size:15px}
+.dval{font-family:var(--display);font-size:18px;color:var(--c)}
+.dbar{height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.dbar i{display:block;height:100%;border-radius:99px;background:var(--c)}
+.drow small{font-size:12.5px;font-weight:600;color:var(--ink2)}
 </style>
 
 <div class="app" id="app"></div>
@@ -357,8 +365,6 @@ const CARDS=[
  {id:'s_reflect',s:'mind',q:'Минута вечером, чтобы понять, как прошёл день',blocks:[
    {chips:'rtime',label:'Когда напоминать',options:['20:00','21:00','22:00','23:00']},
    {toggles:'Из чего она будет',items:[{t:'Отметить настроение',ex:'от «так себе» до «отлично»'},{t:'Записать одну маленькую победу'},{t:'Понять, что помешало сделать задуманное'},{t:'Одна вещь, за которую благодарен'},{t:'В воскресенье — итог недели и что поменять'}]}]},
- {id:'s_health',s:'health',q:'День, подстроенный под ваше самочувствие',blocks:[
-   {toggles:'Что включить',items:[{t:'Не выспался — подскажем, что можно отложить'},{t:'Мало двигался — предложим прогулку'},{t:'Напомнить пообедать, если день плотный'},{t:'Разминка после долгого сидения'},{t:'Вечером телефон затихает перед сном',sel:['за 30 мин','за 1 час','за 2 часа']}]}]},
  {id:'s_habits',s:'growth',q:'Привычки, которые правда приживаются',blocks:[
    {toggles:'Какие',items:[{t:'Чтение',sel:MIN},{t:'Английский',sel:MIN},{t:'Шаги',sel:['6 000','8 000','10 000','12 000']},{t:'Вода',sel:['1 л','1,5 л','2 л']},{t:'Ложиться вовремя',sel:['до 23:00','до 23:30','до 00:00']},{t:'Тренировки',sel:['1 раз в неделю','2 раза','3 раза']},{t:'Кофе с собой вместо кофейни'},{t:'Ужин дома вместо доставки'},{t:'Откладывать каждый день',sel:['100 ₽','200 ₽','500 ₽']},{t:'Своя привычка',text:'Например, медитация'}]}]},
  {id:'s_chal',s:'growth',q:'Челлендж, чтобы проверить себя',blocks:[
@@ -366,21 +372,11 @@ const CARDS=[
  {id:'s_order',s:'home',q:'Меньше вещей — меньше хлопот',blocks:[
    {toggles:'Что включить',items:[{t:'15 минут в неделю на одно место',ex:'сегодня полка, в следующий раз шкаф'},{t:'Купил новое — отдай или продай старое'},{t:'Подсказка, что можно продать'},{t:'Разбор одежды раз в сезон'},{t:'Перед покупкой — вопрос: куда я это положу?'}]}]},
  {id:'s_count',s:'rest',q:'Отсчёт до событий, которых ждёшь',blocks:[
-   {toggles:'Какие',items:[{t:`До Нового года · ${dn(daysTo(0,1))}`},{t:`До Чёрной пятницы · ${dn(blackFriday())}`},{t:`До Дня студента · ${dn(daysTo(0,25))}`},{t:`До 8 марта · ${dn(daysTo(2,8))}`},{t:`До 23 февраля · ${dn(daysTo(1,23))}`},{t:'До моего дня рождения',date:true},{t:'До отпуска или каникул',date:true},{t:'До зарплаты',num:'Какого числа'}]}]},
+   {toggles:'Какие',items:[{t:`До Нового года · ${dn(daysTo(0,1))}`,subs:['Адвент-календарь: окошко в день с 1 декабря','Счётчик дней на главном экране','План: что успеть до конца года']},{t:'До моего дня рождения',date:true},{t:'До отпуска или поездки',date:true},{t:'Своё событие',pair:['Что за событие','date']}]}]},
  {id:'s_people',s:'people',q:'Быть ближе с теми, кто важен',blocks:[
    {toggles:'Что включить',items:[{t:'Напоминать позвонить близким',sel:['раз в неделю','раз в 2 недели','раз в месяц']},{t:'Не пропускать дни рождения близких',pair:['Имя','date']},{t:'Идеи подарков в пределах суммы',input:'₽'},{t:'Копить на подарок заранее'},{t:'Идея, чем заняться вместе на выходных'}]}]},
  {id:'s_leisure',s:'rest',q:'Свободное время — не только в телефоне',blocks:[
    {toggles:'Что включить',items:[{t:'Куда сходить вечером в пределах суммы',input:'₽'},{t:'План на свободные выходные'},{t:'Найти день, чтобы встретиться с друзьями'},{t:'Новое хобби — по небольшому шагу в неделю'}]}]},
- {id:'s_trip',s:'rest',q:'Поездка без суеты и перерасхода',blocks:[
-   {toggles:'Что включить',items:[{t:'Копить на поездку к нужной дате',date:true},{t:'Сколько можно тратить в день на месте'},{t:'Список вещей под погоду'},{t:'Напомнить про регистрацию на рейс'},{t:'Идеи, что посмотреть на месте'}]}]},
- {id:'s_advent',s:'rest',q:`Новогодний календарь: одно окошко в день до праздника`,sub:`Открывается 1 декабря · до Нового года ${dn(daysTo(0,1))}`,blocks:[
-   {toggles:'Что будет за окошками',items:[
-     {t:'Праздничное настроение',ex:'вечер с новогодним фильмом, мандарины к выходным, фотосессия у ёлки, каток с друзьями'},
-     {t:'Подарки без минуса в январе',ex:'список, кому дарить, бюджет на подарки, копилка на праздничный стол'},
-     {t:'Тёплые дела для близких',ex:'позвонить тому, по кому скучаешь, открытка своими руками, написать старому другу'},
-     {t:'Мой год в цифрах',ex:'31 декабря — карточка года: сколько накопил, на что тратил больше всего, какие привычки прижились'},
-     {t:'Свой вариант',text:'Что бы вы хотели найти за окошком?'}]},
-   {chips:'adv',label:'Когда открывать окошко',options:['Утром','В обед','Вечером']}]},
  {id:'s_fun',s:'mind',q:'Начинать утро с чего-то приятного',blocks:[
    {toggles:'Что включить',items:[{t:'Праздник дня',ex:factEx},{t:'Этот день в истории',ex:'Например, 4 октября 1957 года запустили первый спутник Земли'},{t:'Денежный факт',ex:'Например, 200 ₽ в день — это 73 000 ₽ за год'},{t:'Сонник — что значил сон'},{t:'Цитата дня'},{t:'Праздники на неделю вперёд'}]}]}
 ];
@@ -395,6 +391,7 @@ function ctlHTML(it,k){
   if(it.num) return `<input class="inl" data-for="${k}" type="number" min="1" max="31" inputmode="numeric" placeholder="${it.num}">`;
   if(it.date) return `<input class="inl" data-for="${k}" type="date" aria-label="Дата">`;
   if(it.text) return `<input class="inl wide" data-for="${k}" type="text" placeholder="${it.text}">`;
+  if(it.subs) return it.subs.map(o=>`<button type="button" class="opt" data-msub="${k}" data-v="${esc(o)}">${o}</button>`).join('');
   if(it.pair) return `<input class="inl" data-for="${k}" type="text" placeholder="${it.pair[0]}"><input class="inl" data-for2="${k}" type="date" aria-label="Дата">`;
   return '';
 }
@@ -428,7 +425,8 @@ function readAct(){
     if(bl.inputs) bl.inputs.forEach(i=>{const x=card.querySelector('#'+i.id).value.trim();if(x)v[i.id]=x});
     if(bl.toggles){const on=[...card.querySelectorAll('.cb:checked')].filter(x=>x.dataset.k.startsWith(bi+'-')).map(x=>{
         const a=card.querySelector(`[data-for="${x.dataset.k}"]`),b=card.querySelector(`[data-for2="${x.dataset.k}"]`);
-        const val=[a&&a.value,b&&b.value].filter(Boolean).join(', ');return val?`${x.dataset.t}: ${val}`:x.dataset.t});
+        const subs=[...card.querySelectorAll(`[data-msub="${x.dataset.k}"].on`)].map(o=>o.dataset.v);
+        const val=[a&&a.value,b&&b.value,...subs].filter(Boolean).join(', ');return val?`${x.dataset.t}: ${val}`:x.dataset.t});
       if(on.length)v.on=(v.on||[]).concat(on)}
     if(bl.wish&&wishItems.length) v.wishes=wishItems.map(w=>w.item+(w.price?` (${w.price} ₽)`:''));
   });
@@ -522,39 +520,22 @@ function bindDrag(){
   el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
 }
 
-/* ============ Итог: колесо баланса ============ */
-function sphereScores(){
-  return Object.keys(SPH).map(k=>{
-    const cards=CARDS.filter(c=>c.s===k);
-    let sum=0;cards.forEach(c=>{const a=st.answers.find(x=>x.id===c.id);if(a&&a.a==='yes'){const n=a.v&&a.v.on?a.v.on.length:1;sum+=0.5+0.5*Math.min(n,4)/4}});
-    const seen=cards.filter(c=>st.answers.some(x=>x.id===c.id)).length;
-    return {k,name:SPH[k],score:cards.length?Math.round(sum/cards.length*10):0,seen};
-  });
-}
-function wheelSVG(sc){
-  const W=360,cx=180,cy=180,R=118,n=sc.length;
-  const pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]};
-  let g='';
-  [2.5,5,7.5,10].forEach(l=>{g+=`<polygon points="${sc.map((_,i)=>pt(i,R*l/10).join(',')).join(' ')}" fill="none" stroke="var(--line)" stroke-width="1"/>`});
-  sc.forEach((s,i)=>{const [x,y]=pt(i,R);g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)"/>`});
-  const poly=sc.map((s,i)=>pt(i,R*Math.max(s.score,0.4)/10).join(',')).join(' ');
-  g+=`<defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--b5)"/><stop offset=".5" stop-color="var(--b1)"/><stop offset="1" stop-color="var(--b2)"/></linearGradient></defs><polygon points="${poly}" fill="url(#wg)" fill-opacity=".28" stroke="url(#wg)" stroke-width="3" stroke-linejoin="round"/>`;
-  sc.forEach((s,i)=>{const [x,y]=pt(i,R*Math.max(s.score,0.4)/10);g+=`<circle cx="${x}" cy="${y}" r="6" fill="var(${SC[s.k]})" stroke="var(--card)" stroke-width="1.5"/>`;
-    const [lx,ly]=pt(i,R+30);const anchor=Math.abs(lx-cx)<8?'middle':lx>cx?'start':'end';
-    const words=s.name.split(' ');const l2=words.length>1&&s.name.length>10;
-    g+=`<text x="${lx}" y="${ly-(l2?4:0)}" text-anchor="${anchor}" font-size="15" font-weight="800" fill="var(--ink)">${l2?words[0]:s.name}</text>${l2?`<text x="${lx}" y="${ly+13}" text-anchor="${anchor}" font-size="15" font-weight="800" fill="var(--ink)">${words.slice(1).join(' ')}</text>`:''}<text x="${lx}" y="${ly+(l2?30:17)}" text-anchor="${anchor}" font-size="13" font-weight="700" fill="var(--ink2)">${s.score}/10</text>`});
-  return `<svg viewBox="-80 -10 ${W+160} ${W+30}" role="img" aria-label="Колесо баланса по вашим ответам">${g}</svg>`;
+/* ============ Итог: распределение по сферам ============ */
+function sphereDist(){
+  const keys=Object.keys(SPH).filter(k=>CARDS.some(c=>c.s===k));
+  const rows=keys.map(k=>{let n=0,sc=0;st.answers.forEach(a=>{if(a.a==='yes'&&a.sphere===k){sc++;n+=a.v&&a.v.on?a.v.on.length:1}});return {k,name:SPH[k],n,sc}});
+  const tot=rows.reduce((t,r)=>t+r.n,0)||1;
+  rows.forEach(r=>r.pct=Math.round(r.n/tot*100));
+  return rows.sort((x,y)=>y.n-x.n);
 }
 function done(){
-  const ans=st.answers, mine=ans.filter(a=>a.a==='yes'), sc=sphereScores();
-  const top=[...sc].sort((a,b)=>b.score-a.score).filter(s=>s.score>0).slice(0,3);
-  const low=sc.filter(s=>s.score===0&&s.seen>0).map(s=>s.name.toLowerCase());
+  const ans=st.answers, mine=ans.filter(a=>a.a==='yes'), rows=sphereDist();
+  const on=rows.filter(r=>r.n>0), off=rows.filter(r=>r.n===0).map(r=>r.name.toLowerCase());
   app.innerHTML=`<div class="screen">
-    <h1>Ваше колесо баланса</h1>
-    <p class="num">Чем дальше от центра, тем больше вы хотите, чтобы приложение помогало в этой сфере. Ответов: ${ans.length} из ${st.order.length}.</p>
-    <div class="wheel">${wheelSVG(sc)}</div>
-    ${top.length?`<div class="tops">${top.map(s=>`<div class="topc" style="--c:var(${SC[s.k]})"><b class="num">${s.score}</b>${s.name}</div>`).join('')}</div>`:''}
-    ${low.length?`<p class="gap">Сферы, которые вы сейчас не выбрали: ${low.join(', ')}.</p>`:''}
+    <h1>Вот как вы распределили активности по сферам</h1>
+    <p class="num">Сколько функций вы включили в каждой сфере жизни. Ответов: ${ans.length} из ${st.order.length}.</p>
+    ${on.length?`<div class="dist">${on.map(r=>`<div class="drow" style="--c:var(${SC[r.k]})"><div class="dtop"><span class="dname">${r.name}</span><span class="dval num">${r.pct}%</span></div><div class="dbar"><i style="width:${Math.max(r.pct,3)}%"></i></div><small class="num">${r.n} ${plural(r.n,'активность','активности','активностей')} · ${r.sc} ${plural(r.sc,'сценарий','сценария','сценариев')}</small></div>`).join('')}</div>`:`<p>Вы пока ничего не выбрали.</p>`}
+    ${off.length&&on.length?`<p class="gap">Не выбрали: ${off.join(', ')}.</p>`:''}
     ${mine.length?`<div><div class="q"><h3>Что вы включили</h3></div><ul class="mine">${mine.map(a=>`<li><span>${SPH[byId[a.id].s]}</span>${byId[a.id].q}${a.v?`<small>${valText(a.v)}</small>`:''}</li>`).join('')}</ul></div>`:''}
     <div class="fb"><h3>Чего-то не хватило?</h3><p class="small">Напишите, что ещё хотелось бы видеть в таком приложении, что было непонятно или что лишнее. Можно пропустить.</p>
       ${st.comment?`<div class="fbok">Спасибо, ваш комментарий отправлен.</div>`:`<textarea id="fbt" rows="4" placeholder="Например, хочу напоминания о врачах"></textarea><button class="go" data-act="fbsend">Отправить</button>`}</div>
@@ -570,6 +551,7 @@ document.addEventListener('click',e=>{
     const cu=document.querySelector(`[data-custom="${pk.dataset.pick}"]`);if(cu)cu.value='';
     if(pk.dataset.pick==='sch'){const r=document.getElementById('daysrow');r.hidden=pk.dataset.v==='Нерегулярно';const two=pk.dataset.v==='Аванс и зарплата';document.getElementById('d2').hidden=!two;document.getElementById('d1').placeholder=two?'Зарплата, число':'Какого числа?'}
     clearNope();return}
+  const ms=e.target.closest('[data-msub]'); if(ms){ms.classList.toggle('on');clearNope();return}
   const an=e.target.closest('[data-ans]'); if(an){if(an.dataset.ans==='yes')tryYes();else fly(an.dataset.ans);return}
   const a=e.target.closest('[data-act]'); if(!a)return;
   switch(a.dataset.act){
