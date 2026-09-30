@@ -149,6 +149,8 @@ pre{background:var(--soft);border-radius:12px;padding:10px;font-size:11px;max-he
 .tr .ex{font-size:12px;color:var(--ink2);font-weight:600;line-height:1.35}
 .tr .ctl{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
 .tr .ctl[hidden]{display:none}
+.subl{width:100%;font-size:12px;font-weight:800;color:var(--ink2);margin-top:2px}
+.opt.subo{font-size:13px;text-align:left}
 .cb{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
 .sw{flex:none;width:40px;height:24px;border-radius:99px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;margin-top:1px}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--card);transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.15)}
@@ -366,21 +368,13 @@ const CARDS=[
  {id:'s_order',s:'home',q:'Меньше вещей — меньше хлопот',blocks:[
    {toggles:'Что включить',items:[{t:'15 минут в неделю на одно место',ex:'сегодня полка, в следующий раз шкаф'},{t:'Купил новое — отдай или продай старое'},{t:'Подсказка, что можно продать'},{t:'Разбор одежды раз в сезон'},{t:'Перед покупкой — вопрос: куда я это положу?'}]}]},
  {id:'s_count',s:'rest',q:'Отсчёт до событий, которых ждёшь',blocks:[
-   {toggles:'Какие',items:[{t:`До Нового года · ${dn(daysTo(0,1))}`},{t:`До Чёрной пятницы · ${dn(blackFriday())}`},{t:`До Дня студента · ${dn(daysTo(0,25))}`},{t:`До 8 марта · ${dn(daysTo(2,8))}`},{t:`До 23 февраля · ${dn(daysTo(1,23))}`},{t:'До моего дня рождения',date:true},{t:'До отпуска или каникул',date:true},{t:'До зарплаты',num:'Какого числа'}]}]},
+   {toggles:'До чего считать',items:[{t:`До Нового года · ${dn(daysTo(0,1))}`,subs:['Адвент-календарь с 1 декабря','Подарки без минуса в январе','Праздничные дела на выходные','Мой год в цифрах']},{t:'До моего дня рождения',date:true},{t:'До отпуска или каникул',date:true},{t:'Своё событие',pair:['Что за событие']}]}]},
  {id:'s_people',s:'people',q:'Быть ближе с теми, кто важен',blocks:[
    {toggles:'Что включить',items:[{t:'Напоминать позвонить близким',sel:['раз в неделю','раз в 2 недели','раз в месяц']},{t:'Не пропускать дни рождения близких',pair:['Имя','date']},{t:'Идеи подарков в пределах суммы',input:'₽'},{t:'Копить на подарок заранее'},{t:'Идея, чем заняться вместе на выходных'},{t:'Общий список покупок с теми, с кем живу'}]}]},
  {id:'s_leisure',s:'rest',q:'Свободное время — не только в телефоне',blocks:[
    {toggles:'Что включить',items:[{t:'Куда сходить вечером в пределах суммы',input:'₽'},{t:'План на свободные выходные'},{t:'Найти день, чтобы встретиться с друзьями'},{t:'Новое хобби — по небольшому шагу в неделю'}]}]},
  {id:'s_trip',s:'rest',q:'Поездка без суеты и перерасхода',blocks:[
    {toggles:'Что включить',items:[{t:'Копить на поездку к нужной дате',date:true},{t:'Сколько можно тратить в день на месте'},{t:'Список вещей под погоду'},{t:'Напомнить про регистрацию на рейс'},{t:'Идеи, что посмотреть на месте'}]}]},
- {id:'s_advent',s:'rest',q:`Новогодний календарь: одно окошко в день до праздника`,sub:`Открывается 1 декабря · до Нового года ${dn(daysTo(0,1))}`,blocks:[
-   {toggles:'Что будет за окошками',items:[
-     {t:'Праздничное настроение',ex:'вечер с новогодним фильмом, мандарины к выходным, фотосессия у ёлки, каток с друзьями'},
-     {t:'Подарки без минуса в январе',ex:'список, кому дарить, бюджет на подарки, копилка на праздничный стол'},
-     {t:'Тёплые дела для близких',ex:'позвонить тому, по кому скучаешь, открытка своими руками, написать старому другу'},
-     {t:'Мой год в цифрах',ex:'31 декабря — карточка года: сколько накопил, на что тратил больше всего, какие привычки прижились'},
-     {t:'Свой вариант',text:'Что бы вы хотели найти за окошком?'}]},
-   {chips:'adv',label:'Когда открывать окошко',options:['Утром','В обед','Вечером']}]},
  {id:'s_fun',s:'mind',q:'Начинать утро с чего-то приятного',blocks:[
    {toggles:'Что включить',items:[{t:'Праздник дня',ex:factEx},{t:'Этот день в истории',ex:'Например, 4 октября 1957 года запустили первый спутник Земли'},{t:'Денежный факт',ex:'Например, 200 ₽ в день — это 73 000 ₽ за год'},{t:'Сонник — что значил сон'},{t:'Цитата дня'},{t:'Праздники на неделю вперёд'}]}]}
 ];
@@ -390,6 +384,7 @@ const byId=Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let wishItems=[];
 const esc=t=>String(t).replace(/"/g,'&quot;');
 function ctlHTML(it,k){
+  if(it.subs) return `<div class="subl">Что включить к празднику</div>${it.subs.map(o=>`<button type="button" class="opt subo" data-subfor="${k}" data-v="${esc(o)}">${o}</button>`).join('')}`;
   if(it.sel) return `<select class="sel" data-for="${k}" aria-label="${esc(it.t)}">${it.sel.map(o=>`<option>${o}</option>`).join('')}</select>`;
   if(it.input) return `<input class="inl" data-for="${k}" type="number" inputmode="numeric" placeholder="${it.input}">`;
   if(it.num) return `<input class="inl" data-for="${k}" type="number" min="1" max="31" inputmode="numeric" placeholder="${it.num}">`;
@@ -428,7 +423,7 @@ function readAct(){
     if(bl.inputs) bl.inputs.forEach(i=>{const x=card.querySelector('#'+i.id).value.trim();if(x)v[i.id]=x});
     if(bl.toggles){const on=[...card.querySelectorAll('.cb:checked')].filter(x=>x.dataset.k.startsWith(bi+'-')).map(x=>{
         const a=card.querySelector(`[data-for="${x.dataset.k}"]`),b=card.querySelector(`[data-for2="${x.dataset.k}"]`);
-        const val=[a&&a.value,b&&b.value].filter(Boolean).join(', ');return val?`${x.dataset.t}: ${val}`:x.dataset.t});
+        const subs=[...card.querySelectorAll(`[data-subfor="${x.dataset.k}"].on`)].map(e=>e.dataset.v);const val=[a&&a.value,b&&b.value,...subs].filter(Boolean).join(', ');return val?`${x.dataset.t}: ${val}`:x.dataset.t});
       if(on.length)v.on=(v.on||[]).concat(on)}
     if(bl.wish&&wishItems.length) v.wishes=wishItems.map(w=>w.item+(w.price?` (${w.price} ₽)`:''));
   });
@@ -566,6 +561,7 @@ function done(){
 /* ============ События ============ */
 document.addEventListener('click',e=>{
   const s=e.target.closest('[data-set]'); if(s){st[s.dataset.set]=s.dataset.v;save();render();return}
+  const sf=e.target.closest('[data-subfor]'); if(sf){sf.classList.toggle('on');clearNope();return}
   const pk=e.target.closest('[data-pick]'); if(pk){pk.parentElement.querySelectorAll(`[data-pick="${pk.dataset.pick}"]`).forEach(b=>b.classList.toggle('on',b===pk));
     const cu=document.querySelector(`[data-custom="${pk.dataset.pick}"]`);if(cu)cu.value='';
     if(pk.dataset.pick==='sch'){const r=document.getElementById('daysrow');r.hidden=pk.dataset.v==='Нерегулярно';const two=pk.dataset.v==='Аванс и зарплата';document.getElementById('d2').hidden=!two;document.getElementById('d1').placeholder=two?'Зарплата, число':'Какого числа?'}
