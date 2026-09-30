@@ -286,6 +286,27 @@ body{background:
 .v3 .deck:has(.ai){height:330px}
 .v3 .mini.top.ai{animation:bob 5s ease-in-out infinite;animation-delay:var(--d)}
 .v3 .mini.ai .st{display:none}
+
+.wx,.vc{background:var(--card);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.wxh,.vch{font-size:11px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.wxd{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center}
+.wxd div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--ink2)}
+.wxd b{font-size:12px;color:var(--ink)}
+.wxd i{width:26px;height:26px;border-radius:50%;display:block}
+.wxd .sun{background:radial-gradient(circle,#FFC23D 0 55%,rgba(255,194,61,.35) 56% 100%)}
+.wxd .sun.big{box-shadow:0 0 14px #FFC23D}
+.wxd .cloud{background:#C9CED6;border-radius:14px;width:32px;height:18px;margin:4px 0}
+.wxd .storm{background:#5B6272;border-radius:14px;width:32px;height:18px;margin:4px 0;position:relative}
+.wxd .storm::after{content:"";position:absolute;left:13px;top:14px;width:6px;height:10px;background:#FFC23D;clip-path:polygon(60% 0,0 60%,45% 60%,30% 100%,100% 35%,55% 35%)}
+.wxd em{font-style:normal;font-size:10px;font-weight:800;color:var(--c);line-height:1.1}
+.vbub{position:relative;background:var(--soft);border-radius:14px 14px 14px 4px;padding:10px 12px 10px 38px;font-size:13px;font-weight:600;line-height:1.35}
+.vbub .mic{position:absolute;left:10px;top:11px;width:18px;height:18px;border-radius:50%;background:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 25%,transparent);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--c) 10%,transparent)}}
+.varr{font-size:11px;font-weight:800;color:var(--c);text-align:center}
+.varr::before{content:"↓ "}
+.vout{display:flex;flex-direction:column;gap:6px}
+.vout span{display:flex;gap:8px;align-items:baseline;font-size:13px;font-weight:700;border-left:3px solid var(--k);padding:3px 0 3px 9px}
+.vout b{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--k);min-width:86px;letter-spacing:.03em}
 </style>
 
 <div class="app" id="app"></div>
@@ -338,45 +359,53 @@ const SC={money:'--b2',health:'--b6',people:'--b5',work:'--b1',growth:'--b7',res
 /* ============ Сценарии ============
    Карточка = сценарий. «Хочу» засчитывается только когда выбрано, что именно включить. */
 const MIN=['10 мин','15 мин','20 мин','30 мин','45 мин','1 час'];
+const WEATHER_DEMO=`<div class="wx"><div class="wxh">Так это может выглядеть</div><div class="wxd">
+<div><b>Пн</b><i class="sun"></i><span>Ясно</span></div>
+<div><b>Вт</b><i class="sun"></i><span>Ясно</span></div>
+<div><b>Ср</b><i class="cloud"></i><span>Облачно</span><em>подписка</em></div>
+<div><b>Чт</b><i class="storm"></i><span>Гроза</span><em>аренда</em></div>
+<div><b>Пт</b><i class="sun big"></i><span>Солнце</span><em>аванс</em></div></div></div>`;
+const VOICE_DEMO=`<div class="vc"><div class="vch">Так это может выглядеть</div><div class="vbub"><i class="mic"></i>«Завтра до обеда отправить отчёт, в пятницу у Ани день рождения — подарок тысячи на три, и отложить на отпуск»</div>
+<div class="varr">ИИ разложил</div><div class="vout"><span style="--k:#3D7BFF"><b>Дело</b>Отчёт — завтра до 13:00</span><span style="--k:#E0457B"><b>Напоминание</b>День рождения Ани — пятница</span><span style="--k:#E07B1F"><b>Покупка</b>Подарок до 3 000 ₽</span><span style="--k:#1C9C62"><b>Копилка</b>Отпуск</span></div></div>`;
 const CARDS=[
+ {id:'s_weather',s:'money',q:'Денежная погода: прогноз ваших денег до зарплаты',sub:'Один взгляд утром — и понятно, можно ли выдохнуть',blocks:[
+   {html:WEATHER_DEMO},
+   {toggles:'Что включить',items:[{t:'Прогноз каждое утро',sel:['в 7:00','в 8:00','в 9:00']},{t:'Предупредить о «грозе» — крупном списании',sel:['за 1 день','за 3 дня','за неделю']},{t:'Напомнить за день до списания подписки'},{t:'Найти забытые подписки'},{t:'Показать, где плачу дважды за одно и то же'},{t:'Ясная неделя — подсказать, сколько можно отложить'},{t:'Прогноз прямо на экране блокировки'}]}]},
  {id:'s_income',s:'money',q:'Разложить деньги в тот же день, как они пришли',sub:'Вы только подтверждаете — остальное приложение делает само',blocks:[
    {chips:'sch',label:'Как приходят деньги?',options:['Раз в месяц','Аванс и зарплата','Нерегулярно'],days:true},
    {toggles:'Что сделать сразу',items:[{t:'Отложить на аренду, кредит и связь',ex:'чтобы эти деньги не потратились случайно'},{t:'Часть — в копилку, пока не разошлась',sel:['5%','10%','15%','20%']},{t:'Посчитать, сколько можно тратить в день'}]}]},
- {id:'s_limit',s:'money',q:'Каждый день знать, сколько можно потратить',sub:'И дотягивать до зарплаты без паники',blocks:[
+ {id:'s_limit',s:'money',q:'Лимит на день — и потолок на то, что утекает незаметно',sub:'Чтобы дотягивать до зарплаты без паники',blocks:[
    {chips:'amt',label:'Лимит на день',options:['700 ₽','1 000 ₽','1 500 ₽'],custom:'Своя сумма, ₽'},
-   {toggles:'Как ему работать',items:[{t:'Потратил больше — лимит на следующие дни пересчитается сам'},{t:'Не потратил — остаток переходит на завтра'},{t:'Остаток дня — в копилку одним нажатием'},{t:'Предупредить заранее, если до зарплаты не хватает'},{t:'Показать, на что ушли деньги, если вышел за лимит'},{t:'Остаток лимита — прямо на экране блокировки'}]}]},
- {id:'s_cat',s:'money',q:'Поставить потолок на то, что утекает незаметно',blocks:[
-   {toggles:'На что и сколько в месяц',items:[{t:'Доставка еды',input:'₽ в месяц'},{t:'Кофе навынос',input:'₽ в месяц'},{t:'Маркетплейсы',input:'₽ в месяц'},{t:'Игры и донаты',input:'₽ в месяц'},{t:'Развлечения по выходным',input:'₽ в месяц'}]}]},
+   {toggles:'Как ему работать',items:[{t:'Потратил больше — лимит на следующие дни пересчитается сам'},{t:'Не потратил — остаток переходит на завтра'},{t:'Остаток дня — в копилку одним нажатием'},{t:'Предупредить заранее, если до зарплаты не хватает'},{t:'Остаток лимита — прямо на экране блокировки'}]},
+   {toggles:'Потолок на месяц по категориям · можно пропустить',items:[{t:'Доставка еды',input:'₽ в месяц'},{t:'Кофе навынос',input:'₽ в месяц'},{t:'Маркетплейсы',input:'₽ в месяц'},{t:'Игры и донаты',input:'₽ в месяц'},{t:'Развлечения',input:'₽ в месяц'}]}]},
  {id:'s_piggy',s:'money',q:'Копить на мечту — с суммой и датой',blocks:[
    {inputs:[{id:'gname',ph:'На что копите',w:'wide'},{id:'gsum',ph:'Сколько нужно, ₽',type:'number'}],label:'Цель · можно пропустить'},
    {toggles:'Как копить',items:[{t:'Откладывать часть каждой зарплаты',sel:['5%','10%','15%','20%']},{t:'Округлять покупки — сдачу в копилку',sel:['до 10 ₽','до 50 ₽','до 100 ₽']},{t:'Остаток дневного лимита — туда же'},{t:'Показывать, успеваю ли к нужной дате',date:true}]},
    {note:'Копилка откроется в СберБанк Онлайн'}]},
- {id:'s_subs',s:'money',q:'Не платить за то, чем не пользуешься',blocks:[
-   {toggles:'Что включить',items:[{t:'Напомнить за день до списания подписки'},{t:'Найти забытые подписки'},{t:'Показать, где плачу дважды за одно и то же'},{t:'Подобрать тариф связи дешевле'},{t:'План, как быстрее закрыть кредиты'}]}]},
+ {id:'s_voice',s:'work',q:'Выгрузить всё из головы — голосом',sub:'Говорите как есть, вперемешку. ИИ сам разложит по полочкам',blocks:[
+   {html:VOICE_DEMO},
+   {chips:'vwhen',label:'Когда удобнее',options:['Утром','Вечером','В любой момент']},
+   {toggles:'Что ИИ сделает со сказанным',items:[{t:'Дела — в список, со сроками'},{t:'Покупки — в список, с примерной суммой'},{t:'Напоминания — на нужное время'},{t:'Траты и накопления — сразу в лимит или копилку'},{t:'Кому что обещал — не даст забыть'},{t:'Идеи и мысли — в отдельную заметку'}]}]},
  {id:'s_tasks',s:'work',q:'Три главных дела на день — и спокойствие, что ничего не забыто',blocks:[
    {inputs:[{id:'t1',ph:'Дело 1',w:'wide'},{id:'t2',ph:'Дело 2',w:'wide'},{id:'t3',ph:'Дело 3',w:'wide'}],label:'Что важно сделать сегодня · можно пропустить'},
    {toggles:'Что включить',items:[{t:'Утром — напомнить записать дела'},{t:'Днём — проверить, как продвигается',sel:['12:00','15:00','18:00']},{t:'Отметить одно дело главным'},{t:'Предупреждать о дедлайнах заранее'},{t:'Пока делаю главное — соцсети на паузе'}]}]},
+ {id:'s_skill',s:'growth',q:'Навык дня, который ИИ не заменит',sub:'5 минут в день — и вы нужнее на работе',blocks:[
+   {toggles:'Что прокачивать',items:[{t:'Договариваться и вести переговоры'},{t:'Выступать и убеждать'},{t:'Думать критически и проверять факты'},{t:'Работать вместе с ИИ, а не против него'},{t:'Управлять людьми и проектами'},{t:'Разбираться в деньгах и инвестициях'},{t:'Свой навык',text:'Например, дизайн'}]},
+   {toggles:'Как',items:[{t:'Один приём в день — за 5 минут',sel:['утром','в обед','вечером']},{t:'Задание, чтобы попробовать сегодня же'},{t:'Раз в неделю — что уже получается лучше'}]}]},
+ {id:'s_morning',s:'mind',q:'Утро: 30 секунд — и день понятен',blocks:[
+   {toggles:'Что показать утром',items:[{t:'Что ИИ сделал за ночь — и что ждёт вашего ок',ex:'нашёл забытую подписку, отложил часть аванса, перенёс встречу'},{t:'Главное на сегодня: дела, платежи, дни рождения'},{t:'Финансовое слово дня — простым языком',ex:'Например, «ключевая ставка» — и почему от неё зависит ваш вклад'},{t:'Праздник дня',ex:factEx},{t:'Денежный факт',ex:'Например, 200 ₽ в день — это 73 000 ₽ за год'},{t:'Этот день в истории'}]}]},
  {id:'s_reflect',s:'mind',q:'Минута вечером, чтобы понять, как прошёл день',blocks:[
    {chips:'rtime',label:'Когда напоминать',options:['20:00','21:00','22:00','23:00']},
    {toggles:'Из чего она будет',items:[{t:'Отметить настроение',ex:'от «так себе» до «отлично»'},{t:'Записать одну маленькую победу'},{t:'Понять, что помешало сделать задуманное'},{t:'Одна вещь, за которую благодарен'},{t:'В воскресенье — итог недели и что поменять'}]}]},
  {id:'s_health',s:'health',q:'День, подстроенный под ваше самочувствие',blocks:[
    {toggles:'Что включить',items:[{t:'Не выспался — подскажем, что можно отложить'},{t:'Мало двигался — предложим прогулку'},{t:'Напомнить пообедать, если день плотный'},{t:'Разминка после долгого сидения'},{t:'Вечером телефон затихает перед сном',sel:['за 30 мин','за 1 час','за 2 часа']}]}]},
- {id:'s_habits',s:'growth',q:'Привычки, которые правда приживаются',blocks:[
-   {toggles:'Какие',items:[{t:'Чтение',sel:MIN},{t:'Английский',sel:MIN},{t:'Шаги',sel:['6 000','8 000','10 000','12 000']},{t:'Вода',sel:['1 л','1,5 л','2 л']},{t:'Ложиться вовремя',sel:['до 23:00','до 23:30','до 00:00']},{t:'Тренировки',sel:['1 раз в неделю','2 раза','3 раза']},{t:'Кофе с собой вместо кофейни'},{t:'Ужин дома вместо доставки'},{t:'Откладывать каждый день',sel:['100 ₽','200 ₽','500 ₽']},{t:'Своя привычка',text:'Например, медитация'}]}]},
- {id:'s_chal',s:'growth',q:'Челлендж, чтобы проверить себя',blocks:[
-   {toggles:'Какой',items:[{t:'7 дней без доставки еды'},{t:'Неделя без спонтанных покупок'},{t:'10 000 шагов 5 дней подряд'},{t:'Месяц без новых подписок'},{t:'21 день английского'},{t:'30 дней: минус одна ненужная вещь в день'},{t:'Кто больше отложит за месяц — я или друг'},{t:'Свой челлендж',text:'Например, месяц без сахара'}]}]},
- {id:'s_order',s:'home',q:'Меньше вещей — меньше хлопот',blocks:[
-   {toggles:'Что включить',items:[{t:'15 минут в неделю на одно место',ex:'сегодня полка, в следующий раз шкаф'},{t:'Купил новое — отдай или продай старое'},{t:'Подсказка, что можно продать'},{t:'Разбор одежды раз в сезон'},{t:'Перед покупкой — вопрос: куда я это положу?'}]}]},
+ {id:'s_habits',s:'growth',q:'Привычки и челленджи, которые правда приживаются',blocks:[
+   {toggles:'Привычки',items:[{t:'Чтение',sel:MIN},{t:'Английский',sel:MIN},{t:'Шаги',sel:['6 000','8 000','10 000','12 000']},{t:'Ложиться вовремя',sel:['до 23:00','до 23:30','до 00:00']},{t:'Тренировки',sel:['1 раз в неделю','2 раза','3 раза']},{t:'Откладывать каждый день',sel:['100 ₽','200 ₽','500 ₽']},{t:'Своя привычка',text:'Например, медитация'}]},
+   {toggles:'Или челлендж на месяц',items:[{t:'Неделя без спонтанных покупок'},{t:'10 000 шагов 5 дней подряд'},{t:'Месяц без новых подписок'},{t:'Кто больше отложит за месяц — я или друг'},{t:'Свой челлендж',text:'Например, месяц без сахара'}]}]},
  {id:'s_count',s:'rest',q:'Отсчёт до событий, которых ждёшь',blocks:[
-   {toggles:'До чего считать',items:[{t:`До Нового года · ${dn(daysTo(0,1))}`,subs:['Адвент-календарь с 1 декабря','Подарки без минуса в январе','Праздничные дела на выходные','Мой год в цифрах']},{t:'До моего дня рождения',date:true},{t:'До отпуска или каникул',date:true},{t:'Своё событие',pair:['Что за событие']}]}]},
+   {toggles:'До чего считать',items:[{t:`До Нового года · ${dn(daysTo(0,1))}`,subl:'Что включить к празднику',subs:['Адвент-календарь с 1 декабря','Подарки без минуса в январе','Праздничные дела на выходные','Мой год в цифрах']},{t:'До отпуска или поездки',date:true,subl:'Что включить к поездке',subs:['Копить к дате поездки','Сколько тратить в день на месте','Список вещей под погоду','Напомнить про регистрацию на рейс']},{t:'До моего дня рождения',date:true},{t:'Своё событие',pair:['Что за событие']}]}]},
  {id:'s_people',s:'people',q:'Быть ближе с теми, кто важен',blocks:[
-   {toggles:'Что включить',items:[{t:'Напоминать позвонить близким',sel:['раз в неделю','раз в 2 недели','раз в месяц']},{t:'Не пропускать дни рождения близких',pair:['Имя','date']},{t:'Идеи подарков в пределах суммы',input:'₽'},{t:'Копить на подарок заранее'},{t:'Идея, чем заняться вместе на выходных'},{t:'Общий список покупок с теми, с кем живу'}]}]},
- {id:'s_leisure',s:'rest',q:'Свободное время — не только в телефоне',blocks:[
-   {toggles:'Что включить',items:[{t:'Куда сходить вечером в пределах суммы',input:'₽'},{t:'План на свободные выходные'},{t:'Найти день, чтобы встретиться с друзьями'},{t:'Новое хобби — по небольшому шагу в неделю'}]}]},
- {id:'s_trip',s:'rest',q:'Поездка без суеты и перерасхода',blocks:[
-   {toggles:'Что включить',items:[{t:'Копить на поездку к нужной дате',date:true},{t:'Сколько можно тратить в день на месте'},{t:'Список вещей под погоду'},{t:'Напомнить про регистрацию на рейс'},{t:'Идеи, что посмотреть на месте'}]}]},
- {id:'s_fun',s:'mind',q:'Начинать утро с чего-то приятного',blocks:[
-   {toggles:'Что включить',items:[{t:'Праздник дня',ex:factEx},{t:'Этот день в истории',ex:'Например, 4 октября 1957 года запустили первый спутник Земли'},{t:'Денежный факт',ex:'Например, 200 ₽ в день — это 73 000 ₽ за год'},{t:'Сонник — что значил сон'},{t:'Цитата дня'},{t:'Праздники на неделю вперёд'}]}]}
+   {toggles:'Что включить',items:[{t:'Напоминать позвонить близким',sel:['раз в неделю','раз в 2 недели','раз в месяц']},{t:'Не пропускать дни рождения близких',pair:['Имя','date']},{t:'Идеи подарков в пределах суммы',input:'₽'},{t:'Копить на подарок заранее'},{t:'Идея, чем заняться вместе на выходных'},{t:'Общий список покупок с теми, с кем живу'}]}]}
 ];
 const byId=Object.fromEntries(CARDS.map(c=>[c.id,c]));
 
@@ -384,7 +413,7 @@ const byId=Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let wishItems=[];
 const esc=t=>String(t).replace(/"/g,'&quot;');
 function ctlHTML(it,k){
-  if(it.subs) return `<div class="subl">Что включить к празднику</div>${it.subs.map(o=>`<button type="button" class="opt subo" data-subfor="${k}" data-v="${esc(o)}">${o}</button>`).join('')}`;
+  if(it.subs) return `${it.date?`<input class="inl" data-for="${k}" type="date" aria-label="Дата">`:''}<div class="subl">${it.subl||'Что включить'}</div>${it.subs.map(o=>`<button type="button" class="opt subo" data-subfor="${k}" data-v="${esc(o)}">${o}</button>`).join('')}`;
   if(it.sel) return `<select class="sel" data-for="${k}" aria-label="${esc(it.t)}">${it.sel.map(o=>`<option>${o}</option>`).join('')}</select>`;
   if(it.input) return `<input class="inl" data-for="${k}" type="number" inputmode="numeric" placeholder="${it.input}">`;
   if(it.num) return `<input class="inl" data-for="${k}" type="number" min="1" max="31" inputmode="numeric" placeholder="${it.num}">`;
@@ -402,6 +431,7 @@ function blockHTML(bl,bi){
   if(bl.toggles) h+=`<div class="alabel">${bl.toggles}</div><div class="trs">${bl.items.map((it,ii)=>{const k=`${bi}-${ii}`,ctl=ctlHTML(it,k);
       return `<div class="tr"><div class="lab"><label for="cb${k}">${it.t}</label>${it.ex?`<span class="ex">${it.ex}</span>`:''}${ctl?`<div class="ctl" id="ctl${k}" hidden>${ctl}</div>`:''}</div><input type="checkbox" class="cb" id="cb${k}" data-k="${k}" data-t="${esc(it.t)}"><label class="sw" for="cb${k}" aria-hidden="true"></label></div>`}).join('')}</div>`;
   if(bl.wish) h+=`<div class="alabel">Что хочется купить?</div><div class="opts"><input class="inp wide" id="wname" type="text" placeholder="Например, наушники"><input class="inp sm" id="wprice" type="number" inputmode="numeric" placeholder="Цена, ₽"></div><button class="opt" data-act="wadd">+ Добавить в список</button><ul class="wl" id="wl"></ul>`;
+  if(bl.html) h+=bl.html;
   if(bl.note) h+=`<div class="mock-note">${bl.note}</div>`;
   return h;
 }
@@ -427,7 +457,7 @@ function readAct(){
       if(on.length)v.on=(v.on||[]).concat(on)}
     if(bl.wish&&wishItems.length) v.wishes=wishItems.map(w=>w.item+(w.price?` (${w.price} ₽)`:''));
   });
-  const need={s_income:()=>v.sch&&v.on,s_limit:()=>v.amt,s_piggy:()=>v.on,s_wish:()=>v.wishes||v.on,s_tasks:()=>v.t1||v.t2||v.t3||v.on};
+  const need={s_income:()=>v.sch&&v.on,s_limit:()=>v.amt||v.on,s_voice:()=>v.vwhen||v.on,s_piggy:()=>v.on,s_wish:()=>v.wishes||v.on,s_tasks:()=>v.t1||v.t2||v.t3||v.on};
   return (need[c.id]?need[c.id]():v.on)?v:null;
 }
 function valText(v){if(!v)return '';const p=[];
@@ -441,7 +471,7 @@ const fresh=()=>({screen:'intro',age:null,income:null,order:[],i:0,answers:[],sh
 let st=fresh();
 try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.order&&s.order.length===CARDS.length)st=s}catch(e){}
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(st))}catch(e){}};
-function buildOrder(){const head=['s_income'];const rest=CARDS.map(c=>c.id).filter(id=>!head.includes(id));for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]]}return [...head,...rest]}
+function buildOrder(){const head=['s_weather'];const rest=CARDS.map(c=>c.id).filter(id=>!head.includes(id));for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]]}return [...head,...rest]}
 
 /* ============ Экраны ============ */
 const app=document.getElementById('app');
