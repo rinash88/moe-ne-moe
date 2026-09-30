@@ -491,7 +491,10 @@ const fresh=()=>({screen:'intro',age:null,income:null,order:[],i:0,answers:[],sh
 let st=fresh();
 try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.order&&s.order.length===CARDS.length)st=s}catch(e){}
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(st))}catch(e){}};
-function buildOrder(){const head=['s_weather'];const rest=CARDS.map(c=>c.id).filter(id=>!head.includes(id));for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]]}return [...head,...rest]}
+function buildOrder(){const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const head=['s_weather','s_voice','s_income','s_skill'], tail=['s_health','s_reflect','s_morning'];
+  const mid=CARDS.map(c=>c.id).filter(id=>!head.includes(id)&&!tail.includes(id));
+  return [...head,...sh(mid),...tail].filter(id=>byId[id])}
 
 
 /* ——— голос: демо ——— */
