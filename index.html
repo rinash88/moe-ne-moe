@@ -307,6 +307,30 @@ body{background:
 .vout{display:flex;flex-direction:column;gap:6px}
 .vout span{display:flex;gap:8px;align-items:baseline;font-size:13px;font-weight:700;border-left:3px solid var(--k);padding:3px 0 3px 9px}
 .vout b{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--k);min-width:86px;letter-spacing:.03em}
+
+.wxn{font-size:12px;font-weight:600;color:var(--ink2);line-height:1.35}
+.vbox{background:var(--card);border-radius:16px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.vmic{width:72px;height:72px;border-radius:50%;border:0;background:var(--c);display:grid;place-items:center;box-shadow:0 0 0 8px color-mix(in srgb,var(--c) 18%,transparent);transition:transform .15s}
+.vmic:active{transform:scale(.95)}
+.vmic i{width:18px;height:28px;border-radius:10px;background:#fff;position:relative}
+.vmic i::after{content:"";position:absolute;left:50%;top:22px;width:26px;height:16px;transform:translateX(-50%);border:3px solid #fff;border-top:0;border-radius:0 0 16px 16px}
+.vmic.rec{animation:recp 1s ease-in-out infinite}
+@keyframes recp{50%{box-shadow:0 0 0 16px color-mix(in srgb,var(--c) 10%,transparent)}}
+.vlab{font-size:14px;font-weight:800}
+.vman{border:0;background:none;color:var(--c);font-weight:800;font-size:13px;text-decoration:underline;text-underline-offset:3px;padding:2px}
+.vtxt{width:100%;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.vtxt[hidden],.vtr[hidden]{display:none}
+.vtxt textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:14px;background:var(--soft);color:var(--ink);resize:vertical}
+.vtr{width:100%;background:var(--soft);border-radius:12px 12px 12px 4px;padding:10px 12px;font-size:13px;font-weight:600;text-align:left;line-height:1.35}
+.vres{width:100%;text-align:left}
+.vres .vhd{font-size:11px;font-weight:800;color:var(--c);text-transform:uppercase;letter-spacing:.04em;margin:4px 0 6px}
+.vres ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.vres li{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;border-left:3px solid var(--k);padding:4px 0 4px 9px;font-size:13px;font-weight:700;animation:vin .35s both}
+.vres li b{font-size:10px;text-transform:uppercase;color:var(--k);letter-spacing:.03em;min-width:84px}
+.vres li.main span{color:var(--k)}
+.vstar{border:0;background:none;font-size:18px;color:#d0cbc2;padding:0 4px;line-height:1}
+.vstar.on{color:#F5B400}
+@keyframes vin{from{opacity:0;transform:translateY(6px)}}
 </style>
 
 <div class="app" id="app"></div>
@@ -360,47 +384,42 @@ const SC={money:'--b2',health:'--b6',people:'--b5',work:'--b1',growth:'--b7',res
    Карточка = сценарий. «Хочу» засчитывается только когда выбрано, что именно включить. */
 const MIN=['10 мин','15 мин','20 мин','30 мин','45 мин','1 час'];
 const WEATHER_DEMO=`<div class="wx"><div class="wxh">Так это может выглядеть</div><div class="wxd">
-<div><b>Пн</b><i class="sun"></i><span>Ясно</span></div>
-<div><b>Вт</b><i class="sun"></i><span>Ясно</span></div>
-<div><b>Ср</b><i class="cloud"></i><span>Облачно</span><em>подписка</em></div>
+<div><b>Пн</b><i class="sun"></i><span>Ясно</span><em>в лимите</em></div>
+<div><b>Вт</b><i class="cloud"></i><span>Облачно</span><em>лимит превышен</em></div>
+<div><b>Ср</b><i class="sun"></i><span>Ясно</span><em>в лимите</em></div>
 <div><b>Чт</b><i class="storm"></i><span>Гроза</span><em>аренда</em></div>
-<div><b>Пт</b><i class="sun big"></i><span>Солнце</span><em>аванс</em></div></div></div>`;
-const VOICE_DEMO=`<div class="vc"><div class="vch">Так это может выглядеть</div><div class="vbub"><i class="mic"></i>«Завтра до обеда отправить отчёт, в пятницу у Ани день рождения — подарок тысячи на три, и отложить на отпуск»</div>
-<div class="varr">ИИ разложил</div><div class="vout"><span style="--k:#3D7BFF"><b>Дело</b>Отчёт — завтра до 13:00</span><span style="--k:#E0457B"><b>Напоминание</b>День рождения Ани — пятница</span><span style="--k:#E07B1F"><b>Покупка</b>Подарок до 3 000 ₽</span><span style="--k:#1C9C62"><b>Копилка</b>Отпуск</span></div></div>`;
+<div><b>Пт</b><i class="sun big"></i><span>Солнце</span><em>аванс</em></div></div>
+<div class="wxn">Уложились в лимит — ясно. Потратили больше — набегают тучи на следующие дни. Крупное списание — гроза.</div></div>`;
+const VOICE_BOX=`<div class="vbox"><button type="button" class="vmic" data-act="vmic" aria-label="Сказать голосом"><i></i></button>
+<div class="vlab">Нажмите и скажите всё, что крутится в голове</div>
+<button type="button" class="vman" data-act="vman">или впишите вручную</button>
+<div class="vtxt" hidden><textarea rows="3" placeholder="Например: отчёт до пятницы, купить подарок Ане, записаться к стоматологу"></textarea><button type="button" class="opt" data-act="vparse">Разложить</button></div>
+<div class="vtr" hidden></div><div class="vres"></div></div>`;
 const CARDS=[
  {id:'s_weather',s:'money',q:'Денежная погода: прогноз ваших денег до зарплаты',sub:'Один взгляд утром — и понятно, можно ли выдохнуть',blocks:[
    {html:WEATHER_DEMO},
-   {toggles:'Что включить',items:[{t:'Прогноз каждое утро',sel:['в 7:00','в 8:00','в 9:00']},{t:'Предупредить о «грозе» — крупном списании',sel:['за 1 день','за 3 дня','за неделю']},{t:'Напомнить за день до списания подписки'},{t:'Найти забытые подписки'},{t:'Показать, где плачу дважды за одно и то же'},{t:'Ясная неделя — подсказать, сколько можно отложить'},{t:'Прогноз прямо на экране блокировки'}]}]},
+   {chips:'amt',label:'Лимит на день · можно пропустить',options:['700 ₽','1 000 ₽','1 500 ₽'],custom:'Своя сумма, ₽'},
+   {toggles:'Что включить',items:[{t:'Прогноз каждое утро',sel:['в 7:00','в 8:00','в 9:00']},{t:'Потратил больше — лимит на следующие дни пересчитается сам'},{t:'Не потратил — остаток на завтра или в копилку'},{t:'Предупредить о «грозе» — крупном списании',sel:['за 1 день','за 3 дня','за неделю']},{t:'Подписки: напомнить до списания и найти забытые'},{t:'Потолок на месяц по категориям',subl:'На что',subs:['Доставка еды','Кофе навынос','Маркетплейсы','Игры и донаты','Развлечения']},{t:'Прогноз прямо на экране блокировки'}]}]},
  {id:'s_income',s:'money',q:'Разложить деньги в тот же день, как они пришли',sub:'Вы только подтверждаете — остальное приложение делает само',blocks:[
    {chips:'sch',label:'Как приходят деньги?',options:['Раз в месяц','Аванс и зарплата','Нерегулярно'],days:true},
    {toggles:'Что сделать сразу',items:[{t:'Отложить на аренду, кредит и связь',ex:'чтобы эти деньги не потратились случайно'},{t:'Часть — в копилку, пока не разошлась',sel:['5%','10%','15%','20%']},{t:'Посчитать, сколько можно тратить в день'}]}]},
- {id:'s_limit',s:'money',q:'Лимит на день — и потолок на то, что утекает незаметно',sub:'Чтобы дотягивать до зарплаты без паники',blocks:[
-   {chips:'amt',label:'Лимит на день',options:['700 ₽','1 000 ₽','1 500 ₽'],custom:'Своя сумма, ₽'},
-   {toggles:'Как ему работать',items:[{t:'Потратил больше — лимит на следующие дни пересчитается сам'},{t:'Не потратил — остаток переходит на завтра'},{t:'Остаток дня — в копилку одним нажатием'},{t:'Предупредить заранее, если до зарплаты не хватает'},{t:'Остаток лимита — прямо на экране блокировки'}]},
-   {toggles:'Потолок на месяц по категориям · можно пропустить',items:[{t:'Доставка еды',input:'₽ в месяц'},{t:'Кофе навынос',input:'₽ в месяц'},{t:'Маркетплейсы',input:'₽ в месяц'},{t:'Игры и донаты',input:'₽ в месяц'},{t:'Развлечения',input:'₽ в месяц'}]}]},
- {id:'s_piggy',s:'money',q:'Копить на мечту — с суммой и датой',blocks:[
-   {inputs:[{id:'gname',ph:'На что копите',w:'wide'},{id:'gsum',ph:'Сколько нужно, ₽',type:'number'}],label:'Цель · можно пропустить'},
-   {toggles:'Как копить',items:[{t:'Откладывать часть каждой зарплаты',sel:['5%','10%','15%','20%']},{t:'Округлять покупки — сдачу в копилку',sel:['до 10 ₽','до 50 ₽','до 100 ₽']},{t:'Остаток дневного лимита — туда же'},{t:'Показывать, успеваю ли к нужной дате',date:true}]},
-   {note:'Копилка откроется в СберБанк Онлайн'}]},
  {id:'s_voice',s:'work',q:'Выгрузить всё из головы — голосом',sub:'Говорите как есть, вперемешку. ИИ сам разложит по полочкам',blocks:[
-   {html:VOICE_DEMO},
-   {chips:'vwhen',label:'Когда удобнее',options:['Утром','Вечером','В любой момент']},
-   {toggles:'Что ИИ сделает со сказанным',items:[{t:'Дела — в список, со сроками'},{t:'Покупки — в список, с примерной суммой'},{t:'Напоминания — на нужное время'},{t:'Траты и накопления — сразу в лимит или копилку'},{t:'Кому что обещал — не даст забыть'},{t:'Идеи и мысли — в отдельную заметку'}]}]},
- {id:'s_tasks',s:'work',q:'Три главных дела на день — и спокойствие, что ничего не забыто',blocks:[
-   {inputs:[{id:'t1',ph:'Дело 1',w:'wide'},{id:'t2',ph:'Дело 2',w:'wide'},{id:'t3',ph:'Дело 3',w:'wide'}],label:'Что важно сделать сегодня · можно пропустить'},
-   {toggles:'Что включить',items:[{t:'Утром — напомнить записать дела'},{t:'Днём — проверить, как продвигается',sel:['12:00','15:00','18:00']},{t:'Отметить одно дело главным'},{t:'Предупреждать о дедлайнах заранее'},{t:'Пока делаю главное — соцсети на паузе'}]}]},
- {id:'s_skill',s:'growth',q:'Навык дня, который ИИ не заменит',sub:'5 минут в день — и вы нужнее на работе',blocks:[
-   {toggles:'Что прокачивать',items:[{t:'Договариваться и вести переговоры'},{t:'Выступать и убеждать'},{t:'Думать критически и проверять факты'},{t:'Работать вместе с ИИ, а не против него'},{t:'Управлять людьми и проектами'},{t:'Разбираться в деньгах и инвестициях'},{t:'Свой навык',text:'Например, дизайн'}]},
+   {html:VOICE_BOX},
+   {toggles:'Что ещё включить',items:[{t:'Утром — напомнить выгрузить голову'},{t:'Главное дело дня — наверх списка'},{t:'Предупреждать о дедлайнах заранее'},{t:'Покупки и траты — сразу в лимит или копилку'},{t:'Кому что обещал — не даст забыть'},{t:'Пока делаю главное — соцсети на паузе'}]}]},
+ {id:'s_skill',s:'growth',q:'Навык дня, который ИИ не заменит',sub:'5 минут в день — и вы нужнее в любой работе',blocks:[
+   {toggles:'Руками',items:[{t:'Ремонт и инструменты',ex:'дрель, перфоратор, собрать и повесить'},{t:'Электрика и сантехника — базово'},{t:'Починить технику или машину'},{t:'Столярка и мастерская'}]},
+   {toggles:'С людьми',items:[{t:'Договариваться и вести переговоры'},{t:'Выступать и убеждать'},{t:'Управлять людьми и проектами'},{t:'Понимать людей и поддерживать'}]},
+   {toggles:'Головой — вместе с ИИ',items:[{t:'Работать с ИИ, а не против него'},{t:'Думать критически и проверять факты'},{t:'Разбираться в деньгах и инвестициях'},{t:'Свой навык',text:'Например, дизайн'}]},
    {toggles:'Как',items:[{t:'Один приём в день — за 5 минут',sel:['утром','в обед','вечером']},{t:'Задание, чтобы попробовать сегодня же'},{t:'Раз в неделю — что уже получается лучше'}]}]},
- {id:'s_morning',s:'mind',q:'Утро: 30 секунд — и день понятен',blocks:[
-   {toggles:'Что показать утром',items:[{t:'Что ИИ сделал за ночь — и что ждёт вашего ок',ex:'нашёл забытую подписку, отложил часть аванса, перенёс встречу'},{t:'Главное на сегодня: дела, платежи, дни рождения'},{t:'Финансовое слово дня — простым языком',ex:'Например, «ключевая ставка» — и почему от неё зависит ваш вклад'},{t:'Праздник дня',ex:factEx},{t:'Денежный факт',ex:'Например, 200 ₽ в день — это 73 000 ₽ за год'},{t:'Этот день в истории'}]}]},
+ {id:'s_morning',s:'mind',q:'Каждое утро — что-то приятное и полезное',blocks:[
+   {toggles:'Что показывать',items:[{t:'Праздник дня',ex:factEx},{t:'Цитата дня'},{t:'Денежный факт',ex:'Например, 200 ₽ в день — это 73 000 ₽ за год'},{t:'Финансовое слово дня — простым языком',ex:'Например, «ключевая ставка» — и почему от неё зависит ваш вклад'},{t:'Мини-урок на минуту',ex:'как устроены вклад, налоговый вычет, кешбэк'},{t:'Этот день в истории'}]}]},
  {id:'s_reflect',s:'mind',q:'Минута вечером, чтобы понять, как прошёл день',blocks:[
    {chips:'rtime',label:'Когда напоминать',options:['20:00','21:00','22:00','23:00']},
    {toggles:'Из чего она будет',items:[{t:'Отметить настроение',ex:'от «так себе» до «отлично»'},{t:'Записать одну маленькую победу'},{t:'Понять, что помешало сделать задуманное'},{t:'Одна вещь, за которую благодарен'},{t:'В воскресенье — итог недели и что поменять'}]}]},
  {id:'s_health',s:'health',q:'День, подстроенный под ваше самочувствие',blocks:[
-   {toggles:'Что включить',items:[{t:'Не выспался — подскажем, что можно отложить'},{t:'Мало двигался — предложим прогулку'},{t:'Напомнить пообедать, если день плотный'},{t:'Разминка после долгого сидения'},{t:'Вечером телефон затихает перед сном',sel:['за 30 мин','за 1 час','за 2 часа']}]}]},
+   {toggles:'Что включить',items:[{t:'Не выспался — подскажем, что можно отложить'},{t:'Мало двигался — предложим прогулку'},{t:'Разминка после долгого сидения'},{t:'Вечером телефон затихает перед сном',sel:['за 30 мин','за 1 час','за 2 часа']}]}]},
  {id:'s_habits',s:'growth',q:'Привычки и челленджи, которые правда приживаются',blocks:[
-   {toggles:'Привычки',items:[{t:'Чтение',sel:MIN},{t:'Английский',sel:MIN},{t:'Шаги',sel:['6 000','8 000','10 000','12 000']},{t:'Ложиться вовремя',sel:['до 23:00','до 23:30','до 00:00']},{t:'Тренировки',sel:['1 раз в неделю','2 раза','3 раза']},{t:'Откладывать каждый день',sel:['100 ₽','200 ₽','500 ₽']},{t:'Своя привычка',text:'Например, медитация'}]},
+   {toggles:'Привычки',items:[{t:'Копить на мечту',pair:['На что копите','date'],subl:'Как откладывать',subs:['Сумму каждый день','Часть каждой зарплаты','Сдачу с покупок','Остаток дневного лимита']},{t:'Чтение',sel:MIN},{t:'Английский',sel:MIN},{t:'Шаги',sel:['6 000','8 000','10 000','12 000']},{t:'Ложиться вовремя',sel:['до 23:00','до 23:30','до 00:00']},{t:'Тренировки',sel:['1 раз в неделю','2 раза','3 раза']},{t:'Своя привычка',text:'Например, медитация'}]},
    {toggles:'Или челлендж на месяц',items:[{t:'Неделя без спонтанных покупок'},{t:'10 000 шагов 5 дней подряд'},{t:'Месяц без новых подписок'},{t:'Кто больше отложит за месяц — я или друг'},{t:'Свой челлендж',text:'Например, месяц без сахара'}]}]},
  {id:'s_count',s:'rest',q:'Отсчёт до событий, которых ждёшь',blocks:[
    {toggles:'До чего считать',items:[{t:`До Нового года · ${dn(daysTo(0,1))}`,subl:'Что включить к празднику',subs:['Адвент-календарь с 1 декабря','Подарки без минуса в январе','Праздничные дела на выходные','Мой год в цифрах']},{t:'До отпуска или поездки',date:true,subl:'Что включить к поездке',subs:['Копить к дате поездки','Сколько тратить в день на месте','Список вещей под погоду','Напомнить про регистрацию на рейс']},{t:'До моего дня рождения',date:true},{t:'Своё событие',pair:['Что за событие']}]}]},
@@ -413,7 +432,7 @@ const byId=Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let wishItems=[];
 const esc=t=>String(t).replace(/"/g,'&quot;');
 function ctlHTML(it,k){
-  if(it.subs) return `${it.date?`<input class="inl" data-for="${k}" type="date" aria-label="Дата">`:''}<div class="subl">${it.subl||'Что включить'}</div>${it.subs.map(o=>`<button type="button" class="opt subo" data-subfor="${k}" data-v="${esc(o)}">${o}</button>`).join('')}`;
+  if(it.subs) return `${it.date?`<input class="inl" data-for="${k}" type="date" aria-label="Дата">`:''}${it.pair?`<input class="inl" data-for="${k}" type="text" placeholder="${it.pair[0]}"><input class="inl" data-for2="${k}" type="date" aria-label="Дата">`:''}<div class="subl">${it.subl||'Что включить'}</div>${it.subs.map(o=>`<button type="button" class="opt subo" data-subfor="${k}" data-v="${esc(o)}">${o}</button>`).join('')}`;
   if(it.sel) return `<select class="sel" data-for="${k}" aria-label="${esc(it.t)}">${it.sel.map(o=>`<option>${o}</option>`).join('')}</select>`;
   if(it.input) return `<input class="inl" data-for="${k}" type="number" inputmode="numeric" placeholder="${it.input}">`;
   if(it.num) return `<input class="inl" data-for="${k}" type="number" min="1" max="31" inputmode="numeric" placeholder="${it.num}">`;
@@ -457,7 +476,8 @@ function readAct(){
       if(on.length)v.on=(v.on||[]).concat(on)}
     if(bl.wish&&wishItems.length) v.wishes=wishItems.map(w=>w.item+(w.price?` (${w.price} ₽)`:''));
   });
-  const need={s_income:()=>v.sch&&v.on,s_limit:()=>v.amt||v.on,s_voice:()=>v.vwhen||v.on,s_piggy:()=>v.on,s_wish:()=>v.wishes||v.on,s_tasks:()=>v.t1||v.t2||v.t3||v.on};
+  {const vb=card.querySelector('.vbox');if(vb&&vb.dataset.tried)v.voice=vb.dataset.tried;}
+  const need={s_income:()=>v.sch&&v.on,s_weather:()=>v.amt||v.on,s_voice:()=>v.voice||v.on,s_piggy:()=>v.on,s_wish:()=>v.wishes||v.on,s_tasks:()=>v.t1||v.t2||v.t3||v.on};
   return (need[c.id]?need[c.id]():v.on)?v:null;
 }
 function valText(v){if(!v)return '';const p=[];
@@ -473,6 +493,18 @@ try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.order&&s.order.length==
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(st))}catch(e){}};
 function buildOrder(){const head=['s_weather'];const rest=CARDS.map(c=>c.id).filter(id=>!head.includes(id));for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]]}return [...head,...rest]}
 
+
+/* ——— голос: демо ——— */
+const V_SAID='Завтра до обеда отправить отчёт, в пятницу у Ани день рождения — купить подарок тысячи на три, записаться к стоматологу и отложить на отпуск';
+const V_OUT=[['Дело','#3D7BFF','Отправить отчёт — завтра до 13:00'],['Напоминание','#E0457B','День рождения Ани — пятница'],['Покупка','#E07B1F','Подарок Ане — до 3 000 ₽'],['Дело','#3D7BFF','Записаться к стоматологу'],['Копилка','#1C9C62','Отложить на отпуск']];
+function vRender(b,items){const r=b.querySelector('.vres');r.innerHTML=`<div class="vhd">ИИ разложил · отметьте главное</div><ul>${items.map(([t,c,x],i)=>`<li style="--k:${c};animation-delay:${i*120}ms"><b>${t}</b><span>${x}</span><button type="button" class="vstar" data-act="vstar" aria-label="Главное">★</button></li>`).join('')}</ul>`;clearNope()}
+function vDemo(b){if(b.dataset.busy)return;b.dataset.busy=1;b.dataset.tried='голос';const m=b.querySelector('.vmic'),l=b.querySelector('.vlab'),tr=b.querySelector('.vtr');b.querySelector('.vres').innerHTML='';
+  m.classList.add('rec');l.textContent='Слушаю…';tr.hidden=false;tr.textContent='';let i=0;
+  setTimeout(()=>{const t=setInterval(()=>{i+=3;tr.textContent='«'+V_SAID.slice(0,i)+(i<V_SAID.length?'':'»');if(i>=V_SAID.length){clearInterval(t);m.classList.remove('rec');l.textContent='ИИ раскладывает…';
+    setTimeout(()=>{l.textContent='Готово. Можно сказать ещё';vRender(b,V_OUT);delete b.dataset.busy},700)}},30)},500)}
+function vParse(b){const t=b.querySelector('textarea').value.trim();if(!t)return;b.dataset.tried=b.dataset.tried?b.dataset.tried+'+текст':'текст';
+  const parts=t.split(/[,;\n]+|\s+и\s+/).map(x=>x.trim()).filter(Boolean);
+  vRender(b,parts.map(p=>/₽|руб|тыс|купить|заказать/i.test(p)?['Покупка','#E07B1F',p]:/рожден|позвонить|напомн|поздрав/i.test(p)?['Напоминание','#E0457B',p]:/отлож|копил|накоп/i.test(p)?['Копилка','#1C9C62',p]:['Дело','#3D7BFF',p]))}
 /* ============ Экраны ============ */
 const app=document.getElementById('app');
 function render(){ if(st.screen==='intro')return intro(); if(st.screen==='done'||st.i>=st.order.length)return done(); swipe() }
@@ -549,7 +581,7 @@ function bindDrag(){
 
 /* ============ Итог: колесо баланса ============ */
 function sphereScores(){
-  return Object.keys(SPH).map(k=>{
+  return Object.keys(SPH).filter(k=>CARDS.some(c=>c.s===k)).map(k=>{
     const cards=CARDS.filter(c=>c.s===k);
     let sum=0;cards.forEach(c=>{const a=st.answers.find(x=>x.id===c.id);if(a&&a.a==='yes'){const n=a.v&&a.v.on?a.v.on.length:1;sum+=0.5+0.5*Math.min(n,4)/4}});
     const seen=cards.filter(c=>st.answers.some(x=>x.id===c.id)).length;
@@ -571,20 +603,17 @@ function wheelSVG(sc){
   return `<svg viewBox="-80 -10 ${W+160} ${W+30}" role="img" aria-label="Колесо баланса по вашим ответам">${g}</svg>`;
 }
 function done(){
-  const ans=st.answers, mine=ans.filter(a=>a.a==='yes'), sc=sphereScores();
+  const ans=st.answers, sc=sphereScores();
   const top=[...sc].sort((a,b)=>b.score-a.score).filter(s=>s.score>0).slice(0,3);
-  const low=sc.filter(s=>s.score===0&&s.seen>0).map(s=>s.name.toLowerCase());
   app.innerHTML=`<div class="screen">
-    <h1>Ваше колесо баланса</h1>
-    <p class="num">Чем дальше от центра, тем больше вы хотите, чтобы приложение помогало в этой сфере. Ответов: ${ans.length} из ${st.order.length}.</p>
+    <h1>Спасибо, что прошли опрос!</h1>
+    <p>Ваши ответы помогут понять, каким должен быть помощник на каждый день.</p>
+    <div class="q"><h3>Как распределились ваши дела и интересы</h3></div>
     <div class="wheel">${wheelSVG(sc)}</div>
     ${top.length?`<div class="tops">${top.map(s=>`<div class="topc" style="--c:var(${SC[s.k]})"><b class="num">${s.score}</b>${s.name}</div>`).join('')}</div>`:''}
-    ${low.length?`<p class="gap">Сферы, которые вы сейчас не выбрали: ${low.join(', ')}.</p>`:''}
-    ${mine.length?`<div><div class="q"><h3>Что вы включили</h3></div><ul class="mine">${mine.map(a=>`<li><span>${SPH[byId[a.id].s]}</span>${byId[a.id].q}${a.v?`<small>${valText(a.v)}</small>`:''}</li>`).join('')}</ul></div>`:''}
-    <div class="fb"><h3>Чего-то не хватило?</h3><p class="small">Напишите, что ещё хотелось бы видеть в таком приложении, что было непонятно или что лишнее. Можно пропустить.</p>
+    <div class="fb"><h3>Чего-то не хватило?</h3><p class="small">Напишите, что ещё хотелось бы видеть в таком приложении или что было лишним. Можно пропустить.</p>
       ${st.comment?`<div class="fbok">Спасибо, ваш комментарий отправлен.</div>`:`<textarea id="fbt" rows="4" placeholder="Например, хочу напоминания о врачах"></textarea><button class="go" data-act="fbsend">Отправить</button>`}</div>
     ${st.i<st.order.length?`<button class="go" data-act="resume">Продолжить с карточки ${st.i+1}</button>`:''}
-    <details><summary class="small">Данные сессии (для проверки)</summary><pre>${JSON.stringify({sid:st.sid,answers:ans})}</pre><button class="opt" data-act="copy">Скопировать</button></details>
     <button class="link" data-act="restart">Пройти заново</button></div>`;
 }
 
@@ -598,6 +627,10 @@ document.addEventListener('click',e=>{
     clearNope();return}
   const an=e.target.closest('[data-ans]'); if(an){if(an.dataset.ans==='yes')tryYes();else fly(an.dataset.ans);return}
   const a=e.target.closest('[data-act]'); if(!a)return;
+  if(a.dataset.act==='vmic'){vDemo(a.closest('.vbox'));return}
+  if(a.dataset.act==='vman'){const b=a.closest('.vbox');b.querySelector('.vtxt').hidden=false;b.querySelector('textarea').focus();return}
+  if(a.dataset.act==='vparse'){vParse(a.closest('.vbox'));return}
+  if(a.dataset.act==='vstar'){a.classList.toggle('on');a.closest('li').classList.toggle('main');return}
   switch(a.dataset.act){
     case 'wadd':{const n=document.getElementById('wname'),pr=document.getElementById('wprice');const t=n.value.trim();if(!t)break;wishItems.push({item:t,price:+pr.value||null});n.value='';pr.value='';document.getElementById('wl').innerHTML=wishItems.map(w=>`<li>${w.item}${w.price?` · ${Number(w.price).toLocaleString('ru-RU')} ₽`:''}</li>`).join('');n.focus();clearNope();break}
     case 'start': st.order=buildOrder();st.i=0;st.answers=[];st.screen='swipe';save();track('start',{sid:st.sid,age:st.age,income:st.income});render();break;
